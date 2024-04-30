@@ -5,4 +5,6 @@ module edu.tasklynx.tasklynxjavafx {
 
     opens edu.tasklynx.tasklynxjavafx to javafx.fxml;
     exports edu.tasklynx.tasklynxjavafx;
+    exports edu.tasklynx.tasklynxjavafx.controllers;
+    opens edu.tasklynx.tasklynxjavafx.controllers to javafx.fxml;
 }

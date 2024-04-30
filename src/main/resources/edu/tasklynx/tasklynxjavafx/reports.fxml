@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="766.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.tasklynx.tasklynxjavafx.controllers.ReportsControllers">
+    <children>
+        <ListView layoutX="16.0" layoutY="62.0" prefHeight="680.0" prefWidth="1270.0" />
+        <Label layoutX="591.0" layoutY="23.0" text="Completed tasks">
+            <font>
+                <Font size="19.0" />
+            </font>
+        </Label>
+    </children>
+</Pane>

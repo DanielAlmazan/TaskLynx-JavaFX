@@ -39,7 +39,7 @@ public class ServiceUtils {
             connection.setConnectTimeout(15000);
             connection.setRequestMethod(method);
 
-            connection.setRequestProperty("Host", "localhost");
+            //connection.setRequestProperty("Host", "localhost");
             connection.setRequestProperty("Connection", "keep-alive");
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("Accept-encoding", "gzip, deflate, br, sdch");
@@ -65,7 +65,7 @@ public class ServiceUtils {
 
             String charset = getCharset(connection.getHeaderField("Content-Type"));
 
-            if (charset == null) {
+            if (charset != null) {
                 InputStream in = connection.getInputStream();
                 if ("gzip".equals(connection.getContentEncoding())) {
                     in = new GZIPInputStream(in);

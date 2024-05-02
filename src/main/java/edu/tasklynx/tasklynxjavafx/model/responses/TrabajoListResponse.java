@@ -5,9 +5,9 @@ import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import java.util.List;
 
 public class TrabajoListResponse extends BaseResponse {
-    List<Trabajo> result;
+    List<Trabajo> pendingTasks;
     
     public List<Trabajo> getJobs() {
-        return result;
+        return pendingTasks;
     }
 }

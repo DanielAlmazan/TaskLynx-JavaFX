@@ -1,0 +1,15 @@
+.btn .accept {
+    -fx-background-color: -btn-accept;
+}
+
+.btn .accept:disabled {
+    -fx-background-color: -btn-accept-disabled;
+}
+
+.btn .danger {
+    -fx-background-color: -btn-danger;
+}
+
+.btn .danger:disabled {
+    -fx-background-color: -btn-danger-disabled;
+}

@@ -1,0 +1,27 @@
+* {
+    -main-bg: #4A4D51;
+    -secondary-bg: #757D8A;
+    -tab-bar-bg: #272727;
+    -tab-bg: #646464;
+    -tab-active-bg: #3C3C3C;
+    -txt-color: #FFFFFF;
+    -txt-color-active: #D8FFF8;
+    -btn-accept: #74A568;
+    -btn-accept-disabled: #747C71;
+    -btn-danger: #A46060;
+    -btn-danger-disabled: #7C7171;
+    -even-row: #E1E1E1;
+    -selected-row: #6F9EF8;
+
+    -fx-text-fill: -txt-color;
+}
+
+@font-face {
+    -fx-font-family: 'Bitter';
+    src: local('/fonts/Bitter-VariableFont_wght.ttf');
+}
+
+@font-face {
+    -fx-font-family: 'Helvetica Neue';
+    src: local('/fonts/HelveticaNeue.ttc');
+}

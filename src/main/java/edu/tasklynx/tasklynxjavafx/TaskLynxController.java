@@ -41,6 +41,7 @@ public class TaskLynxController implements Initializable {
             panel.getChildren().setAll(secondPanel);
         } catch (IOException e) {
             System.out.println("Error: "+ e.getMessage());
+            e.printStackTrace();
         }
     }
 }

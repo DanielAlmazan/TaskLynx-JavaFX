@@ -2,6 +2,7 @@ package edu.tasklynx.tasklynxjavafx.services;
 
 import com.google.gson.Gson;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorListResponse;
+import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 

@@ -33,7 +33,7 @@ const employees = [
 ];
 
 router.get("/", (req, res) => {
-    res.status(200).send({ employees: employees });
+    res.status(200).send({ result: employees });
 });
 
 module.exports = router;

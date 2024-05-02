@@ -73,11 +73,11 @@ public class TasksController implements Initializable {
                     if (!response.isError()) {
                         Platform.runLater(() -> lstTasks.getItems().setAll(response.getJobs()));
                     } else {
-                        System.out.println("ERROR OBTENIENDO LISTA");
+                        System.out.println("ERROR OBTENIENDO LISTA 1: " + response.getErrorMessage());
                     }
                 })
                 .exceptionally(ex -> {
-                    System.out.println("ERROR OBTENIENDO LISTA ???");
+                    System.out.println("ERROR OBTENIENDO LISTA 2: " + ex.getMessage());
                     return null;
                 });
     }

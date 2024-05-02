@@ -69,11 +69,11 @@ const completedTasks = [
 ];
 
 router.get("/pending", (req, res) => {
-    res.status(200).send({ pendingTasks: pendingTasks });
+    res.status(200).send({ result: pendingTasks });
 });
 
 router.get("/completed", (req, res) => {
-    res.status(200).send({ completedTasks: completedTasks });
+    res.status(200).send({ result: completedTasks });
 });
 
 module.exports = router;

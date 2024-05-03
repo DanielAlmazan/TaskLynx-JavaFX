@@ -21,6 +21,8 @@ public class Trabajador {
         this.email = email;
         this.especialidad = especialidad;
     }
+    
+    public Trabajador() { }
 
     public String getDni() {
         return dni;

@@ -1,8 +1,8 @@
 package edu.tasklynx.tasklynxjavafx.model.responses;
 
 public class BaseResponse {
-    private boolean error;
-    private String errorMessage;
+    protected boolean error;
+    protected String errorMessage;
 
     public boolean isError() {
         return error;

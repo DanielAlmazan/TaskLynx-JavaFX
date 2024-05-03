@@ -11,12 +11,15 @@ public class Trabajador {
     private String contraseña;
     private String email;
 
-    public Trabajador(String dni, String nombre, String apellidos, String contraseña, String email) {
+    private String especialidad;
+
+    public Trabajador(String dni, String nombre, String apellidos, String contraseña, String email, String especialidad) {
         this.dni = dni;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.contraseña = contraseña;
         this.email = email;
+        this.especialidad = especialidad;
     }
 
     public String getDni() {
@@ -58,4 +61,13 @@ public class Trabajador {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getEspecialidad() {
+        return especialidad;
+    }
+
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
+    }
+
 }

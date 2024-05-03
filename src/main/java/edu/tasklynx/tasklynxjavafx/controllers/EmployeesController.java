@@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class EmployeesController implements Initializable {
     @FXML
-    private TableView<Trabajo> tbvTasks;
+    private TableView<Trabajo> tbvEmployees;
     @FXML
     private VBox detailContainer;
     @FXML
@@ -66,7 +66,7 @@ public class EmployeesController implements Initializable {
                 });
     }
 
-    private static CompletableFuture<Trabajador> getEmployeeById(String id) {
+    private CompletableFuture<Trabajador> getEmployeeById(String id) {
         String url = ServiceUtils.SERVER + "/employees/" + id;
         return ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenApply(json -> gson.fromJson(json, TrabajadorResponse.class))

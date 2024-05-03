@@ -25,7 +25,7 @@
                               <Font size="19.0" />
                            </font>
                         </Label>
-                        <Button id="btn-add-task" fx:id="btnAdd" mnemonicParsing="false" onAction="#prueba" />
+                        <Button id="btn-add-task" fx:id="btnAdd" mnemonicParsing="false" onAction="#addTask" />
                      </children>
                   </HBox>
                   <TableView fx:id="tbvTasks" onKeyReleased="#onKeyReleased" onMouseClicked="#onSelectedRow" VBox.vgrow="ALWAYS">
@@ -42,7 +42,7 @@
                         </TableColumn>
                         <TableColumn id="last-column" text="Responsable">
                            <cellValueFactory>
-                              <PropertyValueFactory property="id_trabajador" />
+                              <PropertyValueFactory property="nombre" />
                            </cellValueFactory>
                         </TableColumn>
                      </columns>

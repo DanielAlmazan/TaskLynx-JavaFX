@@ -1,15 +1,11 @@
 @import "variables.css";
-@import "navbar.css";
+@import "navbar-style.css";
 @import "buttons_style.css";
+@import "table-views-style.css";
 
 #main-vbox {
     -fx-background-color: -main-bg;
     -fx-text-alignment: left;
-}
-
-Pane * {
-    -fx-font-family: 'Bitter';
-    -fx-font-weight: 800;
 }
 
 .container {
@@ -17,11 +13,6 @@ Pane * {
 }
 
 .container.secondary {
-}
-
-ListView {
-    -fx-background-radius: .5em;
     -fx-background-color: -secondary-bg;
 }
-
 

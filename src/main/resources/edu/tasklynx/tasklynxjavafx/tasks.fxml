@@ -4,15 +4,17 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="766.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.tasklynx.tasklynxjavafx.controllers.TasksController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="766.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.tasklynx.tasklynxjavafx.controllers.TasksController">
    <children>
-      <HBox prefHeight="766.0" prefWidth="1300.0">
+      <HBox prefHeight="766.0" prefWidth="1300.0" spacing="10.0">
          <children>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="750.0" spacing="10.0">
                <children>
@@ -23,17 +25,35 @@
                               <Font size="19.0" />
                            </font>
                         </Label>
-                        <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#prueba" />
+                        <Button id="btn-add-task" fx:id="btnAdd" mnemonicParsing="false" onAction="#prueba" />
                      </children>
                   </HBox>
-                  <ListView fx:id="lstTasks" prefHeight="811.0" prefWidth="740.0" />
+                  <TableView fx:id="tbvTasks" onKeyReleased="#onKeyReleased" onMouseClicked="#onSelectedRow" VBox.vgrow="ALWAYS">
+                     <columns>
+                        <TableColumn id="first-column" text="Categoría">
+                           <cellValueFactory>
+                              <PropertyValueFactory property="categoria" />
+                           </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn text="Fecha inicio">
+                           <cellValueFactory>
+                              <PropertyValueFactory property="fec_ini" />
+                           </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn id="last-column" text="Responsable">
+                           <cellValueFactory>
+                              <PropertyValueFactory property="id_trabajador" />
+                           </cellValueFactory>
+                        </TableColumn>
+                     </columns>
+                  </TableView>
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
-               <HBox.margin>
+               <!--<HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </HBox.margin>
+               </HBox.margin>-->
                <styleClass>
                   <String fx:value="container" />
                   <String fx:value="secondary" />
@@ -41,13 +61,10 @@
             </VBox>
             <VBox prefHeight="766.0" prefWidth="750.0" spacing="10.0">
                <HBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets />
                </HBox.margin>
                <children>
-                  <VBox fx:id="detailContainer" alignment="CENTER" prefHeight="383.0" spacing="10.0">
-                     <VBox.margin>
-                        <Insets left="10.0" right="10.0" top="10.0" />
-                     </VBox.margin>
+                  <VBox fx:id="detailContainer" alignment="CENTER" prefHeight="383.0" spacing="10.0" styleClass="container, secondary">
                      <children>
                         <Label fx:id="lblDetail" text="Select a task to see his details">
                            <font>
@@ -58,17 +75,17 @@
                            <children>
                               <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
                                  <children>
-                                    <Button mnemonicParsing="false" text="Edit task">
+                                    <Button id="btn-edit-task" mnemonicParsing="false" styleClass="btn, btn-accept" text="Edit task">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
                                     </Button>
-                                    <Button mnemonicParsing="false" text="Delete task">
+                                    <Button id="btn-delete-task" mnemonicParsing="false" styleClass="btn, btn-danger" text="Delete task">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
                                     </Button>
-                                    <Button fx:id="btnAssignEmployee" mnemonicParsing="false" text="Assign employee">
+                                    <Button id="btn-assign-employee" fx:id="btnAssignEmployee" mnemonicParsing="false" styleClass="btn, btn-accept" text="Assign employee">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -131,10 +148,7 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="383.0">
-                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" />
-                     </VBox.margin>
+                  <VBox alignment="CENTER" prefHeight="383.0" styleClass="container, secondary">
                      <children>
                         <Label text="There are no assignments to confirm">
                            <font>
@@ -144,12 +158,11 @@
                      </children>
                   </VBox>
                </children>
-               <styleClass>
-                  <String fx:value="container" />
-                  <String fx:value="secondary" />
-               </styleClass>
             </VBox>
          </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
       </HBox>
    </children>
 </Pane>

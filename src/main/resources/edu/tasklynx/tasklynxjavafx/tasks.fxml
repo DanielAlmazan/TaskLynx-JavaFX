@@ -16,9 +16,9 @@
    <children>
       <HBox prefHeight="766.0" prefWidth="1300.0" spacing="10.0">
          <children>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="750.0" spacing="10.0">
+            <VBox alignment="CENTER" prefWidth="750.0" spacing="10.0">
                <children>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                  <HBox alignment="CENTER" spacing="10.0">
                      <children>
                         <Label text="Pending Tasks">
                            <font>
@@ -30,30 +30,30 @@
                   </HBox>
                   <TableView fx:id="tbvTasks" onKeyReleased="#onKeyReleased" onMouseClicked="#onSelectedRow" VBox.vgrow="ALWAYS">
                      <columns>
-                        <TableColumn id="first-column" text="Categoría">
+                        <TableColumn id="first-column" prefWidth="200.0" text="Categoría">
                            <cellValueFactory>
                               <PropertyValueFactory property="categoria" />
                            </cellValueFactory>
                         </TableColumn>
-                        <TableColumn text="Fecha inicio">
+                        <TableColumn prefWidth="200.0" text="Fecha inicio">
                            <cellValueFactory>
                               <PropertyValueFactory property="fec_ini" />
                            </cellValueFactory>
                         </TableColumn>
-                        <TableColumn id="last-column" text="Responsable">
+                        <TableColumn id="last-column" prefWidth="200.0" text="Responsable">
                            <cellValueFactory>
                               <PropertyValueFactory property="nombre_trabajador" />
                            </cellValueFactory>
                         </TableColumn>
                      </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
                   </TableView>
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
-               <!--<HBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </HBox.margin>-->
                <styleClass>
                   <String fx:value="container" />
                   <String fx:value="secondary" />
@@ -73,7 +73,7 @@
                         </Label>
                         <VBox fx:id="blockDetail" prefWidth="100.0" spacing="10.0">
                            <children>
-                              <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
+                              <HBox alignment="CENTER" spacing="10.0" styleClass="container, tertiary">
                                  <children>
                                     <Button id="btn-edit-task" mnemonicParsing="false" styleClass="btn, btn-accept" text="Edit task">
                                        <font>
@@ -95,7 +95,7 @@
                                     <Insets bottom="10.0" top="10.0" />
                                  </padding>
                               </HBox>
-                              <VBox prefWidth="100.0" spacing="5.0">
+                              <VBox spacing="5.0" styleClass="container, tertiary">
                                  <children>
                                     <HBox spacing="10.0">
                                        <children>
@@ -113,7 +113,7 @@
                                     </HBox>
                                     <HBox spacing="10.0">
                                        <children>
-                                          <Label text="Starting date">
+                                          <Label text="Starting date:">
                                              <font>
                                                 <Font size="19.0" />
                                              </font>
@@ -127,7 +127,7 @@
                                     </HBox>
                                     <HBox spacing="10.0">
                                        <children>
-                                          <Label text="Responsible">
+                                          <Label text="Responsible:">
                                              <font>
                                                 <Font size="19.0" />
                                              </font>
@@ -140,6 +140,9 @@
                                        </children>
                                     </HBox>
                                  </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
                               </VBox>
                            </children>
                         </VBox>

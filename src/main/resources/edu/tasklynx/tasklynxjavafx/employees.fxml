@@ -76,7 +76,7 @@
                                 </Label>
                                 <VBox fx:id="blockDetail" prefWidth="100.0" spacing="10.0">
                                     <children>
-                                        <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
+                                        <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0" styleClass="container, tertiary">
                                             <children>
                                                 <Button id="btn-edit-employee" mnemonicParsing="false" styleClass="btn, btn-accept" text="Edit employee">
                                                     <font>
@@ -93,7 +93,7 @@
                                                 <Insets bottom="10.0" top="10.0" />
                                             </padding>
                                         </HBox>
-                                        <VBox prefWidth="100.0" spacing="5.0">
+                                        <VBox prefWidth="100.0" spacing="5.0" styleClass="container, tertiary">
                                             <children>
                                                 <HBox spacing="10.0">
                                                     <children>

@@ -43,8 +43,8 @@
     -fx-padding: 0;
 }
 
-.table-row-cell:last-visible {
-    -fx-background-radius: 0 0 .5em .5em;
+.table-column {
+    -fx-alignment: CENTER;
 }
 
 .table-view .virtual-flow .scroll-bar:vertical,

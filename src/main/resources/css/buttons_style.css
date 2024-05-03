@@ -6,20 +6,12 @@
     -fx-background-color: -btn-accept-hover;
 }
 
-.btn.btn-accept:disabled {
-    -fx-background-color: -btn-accept-disabled;
-}
-
 .btn.btn-danger {
     -fx-background-color: -btn-danger;
 }
 
 .btn.btn-danger:hover {
     -fx-background-color: -btn-danger-hover;
-}
-
-.btn.btn-danger:disabled {
-    -fx-background-color: -btn-danger-disabled;
 }
 
 #btn-add-task {

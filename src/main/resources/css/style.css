@@ -16,3 +16,7 @@
     -fx-background-color: -secondary-bg;
 }
 
+.container.tertiary {
+    -fx-background-color: -main-bg;
+}
+

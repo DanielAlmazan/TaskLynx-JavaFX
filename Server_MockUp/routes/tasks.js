@@ -10,7 +10,7 @@ const pendingTasks = [
         fec_ini: '2022-01-01',
         fec_fin: null,
         tiempo: null,
-        id_trabajador: 'T001',
+        id_trabajador: null,
         prioridad: 1,
     },
     {
@@ -20,7 +20,7 @@ const pendingTasks = [
         fec_ini: '2022-01-02',
         fec_fin: null,
         tiempo: null,
-        id_trabajador: 'T002',
+        id_trabajador: null,
         prioridad: 2,
     },
     {

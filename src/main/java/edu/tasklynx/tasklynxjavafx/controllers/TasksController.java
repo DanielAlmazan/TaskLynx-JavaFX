@@ -5,7 +5,6 @@ import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,8 +19,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class TasksController implements Initializable {
@@ -45,10 +42,13 @@ public class TasksController implements Initializable {
     private Label lblResponsible;
 
     private Gson gson;
+    private boolean showDetail;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         detailContainer.getChildren().remove(blockDetail);
+        showDetail = false;
+
         addImages();
         gson = new Gson();
 
@@ -56,11 +56,8 @@ public class TasksController implements Initializable {
     }
 
     @FXML
-    public void prueba(ActionEvent actionEvent) {
-        detailContainer.setAlignment(Pos.TOP_CENTER);
-        detailContainer.getChildren().add(blockDetail);
-        //lblDetail.setText("Limpieza - Detalle");
-
+    public void addTask(ActionEvent actionEvent) {
+        // TODO
     }
 
     private void addImages() {
@@ -80,12 +77,21 @@ public class TasksController implements Initializable {
     }
     
     public void showTaskDetail() {
+        if(!showDetail) {
+            detailContainer.setAlignment(Pos.TOP_CENTER);
+            detailContainer.getChildren().add(blockDetail);
+            showDetail = true;
+        }
+
         Trabajo trabajo = tbvTasks.getSelectionModel().getSelectedItem();
         if (trabajo != null) {
             lblDetail.setText(trabajo.getCategoria() + " - Detalle");
             lblDescription.setText(trabajo.getDescripcion());
             lblStartingDate.setText(trabajo.getFec_ini().toString());
             lblResponsible.setText(trabajo.getId_trabajador());
+
+            if(trabajo.getId_trabajador() == null)
+                btnAssignEmployee.setDisable(true);
         }
     }
     

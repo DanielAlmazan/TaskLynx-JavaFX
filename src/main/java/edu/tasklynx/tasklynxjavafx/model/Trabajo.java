@@ -1,6 +1,7 @@
 package edu.tasklynx.tasklynxjavafx.model;
 
 import com.google.gson.annotations.SerializedName;
+import edu.tasklynx.tasklynxjavafx.controllers.EmployeesController;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 
 import java.util.Date;
@@ -83,7 +84,7 @@ public class Trabajo {
     }
 
     public String getNombre() {
-        return "";
+        return "Paco";
     }
 
     @Override

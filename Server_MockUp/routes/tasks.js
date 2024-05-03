@@ -307,7 +307,7 @@ const pendingTasks = [
 
 const completedTasks = [
     {
-        cod_trabajo: "J004",
+        cod_trabajo: "J031",
         categoria: "Carpintería",
         descripcion: "Construcción de mesa",
         fec_ini: '2022-01-24',
@@ -317,7 +317,7 @@ const completedTasks = [
         prioridad: 1,
     },
     {
-        cod_trabajo: "J005",
+        cod_trabajo: "J032",
         categoria: "Fontanería",
         descripcion: "Cambiar grifo",
         fec_ini: '2022-01-24',
@@ -327,7 +327,7 @@ const completedTasks = [
         prioridad: 2,
     },
     {
-        cod_trabajo: "J006",
+        cod_trabajo: "J033",
         categoria: "Jardineria",
         descripcion: "Regar el jardín",
         fec_ini: '2022-07-12',
@@ -342,8 +342,20 @@ router.get("/pending", (req, res) => {
     res.status(200).send({ result: pendingTasks });
 });
 
+router.get("/pending/:id", (req, res) => {
+    const id = req.params.id;
+    const task = pendingTasks.filter(t => t.cod_trabajo == id)[0];
+    res.status(200).send({ result: task });
+});
+
 router.get("/completed", (req, res) => {
     res.status(200).send({ result: completedTasks });
+});
+
+router.get("/completed/:id", (req, res) => {
+    const id = req.params.id;
+    const task = completedTasks.filter(t => t.cod_trabajo == id)[0];
+    res.status(200).send({ result: task });;
 });
 
 module.exports = router;

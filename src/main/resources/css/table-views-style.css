@@ -1,0 +1,86 @@
+.table-view .table-row-cell * {
+    -fx-text-fill: -main-bg;
+}
+
+.table-view {
+    -fx-background-color: transparent;
+}
+
+.table-view .corner {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background .filler {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: -tab-bar-bg;
+    -fx-background-radius: .5em .5em 0 0;
+    -fx-background-insets: 0 11px 0 0;
+    -fx-padding: 0 0 5px 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+
+.table-view .table-cell {
+    -fx-font-weight: 900;
+    -fx-border-color: transparent;
+    -fx-padding: 2 0 2 10px;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: white;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0;
+}
+
+.table-row-cell:even {
+    -fx-background-color: -even-row;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0;
+}
+
+.table-row-cell:last-visible {
+    -fx-background-radius: 0 0 .5em .5em;
+}
+
+.table-view .virtual-flow .scroll-bar:vertical,
+.table-view .virtual-flow .scroll-bar:vertical .track,
+.table-view .virtual-flow .scroll-bar:vertical .track-background,
+.table-view .virtual-flow .scroll-bar:horizontal,
+.table-view .virtual-flow .scroll-bar:horizontal .track,
+.table-view .virtual-flow .scroll-bar:horizontal .track-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .virtual-flow .scroll-bar .increment-button,
+.table-view .virtual-flow .scroll-bar .decrement-button {
+    -fx-opacity: 0;
+    -fx-padding: 2;
+}
+
+.table-view .virtual-flow .scroll-bar:vertical .thumb,
+.table-view .virtual-flow .scroll-bar:horizontal .thumb {
+    -fx-background-color: -tab-bar-bg;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: -selected-row;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: white;
+}
+
+.table-view .placeholder {
+    -fx-background-color: white;
+    -fx-background-insets: 0 11px 0 0;
+    -fx-background-radius: 0 0 .5em .5em;
+}
+
+.placeholder Label {
+    -fx-text-fill: -main-bg;
+}

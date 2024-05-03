@@ -1,15 +1,27 @@
-.btn .accept {
+.btn.btn-accept {
     -fx-background-color: -btn-accept;
 }
 
-.btn .accept:disabled {
+.btn.btn-accept:hover {
+    -fx-background-color: -btn-accept-hover;
+}
+
+.btn.btn-accept:disabled {
     -fx-background-color: -btn-accept-disabled;
 }
 
-.btn .danger {
+.btn.btn-danger {
     -fx-background-color: -btn-danger;
 }
 
-.btn .danger:disabled {
+.btn.btn-danger:hover {
+    -fx-background-color: -btn-danger-hover;
+}
+
+.btn.btn-danger:disabled {
     -fx-background-color: -btn-danger-disabled;
+}
+
+#btn-add-task {
+    -fx-background-color: transparent;
 }

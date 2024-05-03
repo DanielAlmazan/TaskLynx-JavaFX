@@ -2,6 +2,7 @@ package edu.tasklynx.tasklynxjavafx.controllers;
 
 import com.google.gson.Gson;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
+import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 import javafx.application.Platform;
@@ -75,9 +76,9 @@ public class TasksController implements Initializable {
     public void onKeyReleased(KeyEvent keyEvent) {
         showTaskDetail();
     }
-    
+
     public void showTaskDetail() {
-        if(!showDetail) {
+        if (!showDetail) {
             detailContainer.setAlignment(Pos.TOP_CENTER);
             detailContainer.getChildren().add(blockDetail);
             showDetail = true;
@@ -85,25 +86,44 @@ public class TasksController implements Initializable {
 
         Trabajo trabajo = tbvTasks.getSelectionModel().getSelectedItem();
         if (trabajo != null) {
-            lblDetail.setText(trabajo.getCategoria() + " - Detalle");
+            lblDetail.setText(trabajo.getCategoria() + " - Detail");
             lblDescription.setText(trabajo.getDescripcion());
             lblStartingDate.setText(trabajo.getFec_ini().toString());
-            lblResponsible.setText(trabajo.getId_trabajador());
+            lblResponsible.setText(trabajo.getNombre_trabajador());
 
-            if(trabajo.getId_trabajador() == null)
-                btnAssignEmployee.setDisable(true);
+            btnAssignEmployee.setDisable(trabajo.getId_trabajador() == null);
         }
     }
-    
+
     private void loadTasks() {
         String url = ServiceUtils.SERVER + "/tasks/pending";
         ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenApply(json -> gson.fromJson(json, TrabajoListResponse.class))
-                .thenAccept(response -> {
+                .thenApply(response -> {
                     if (!response.isError()) {
-                        Platform.runLater(() -> tbvTasks.getItems().setAll(response.getJobs()));
+//                        Platform.runLater(() -> tbvTasks.getItems().setAll(response.getJobs()));
+                        return response.getJobs();
                     } else {
                         System.out.println("ERROR OBTENIENDO LISTA 1: " + response.getErrorMessage());
+                        return null;
+                    }
+                })
+                .thenAccept(list -> {
+                    if (list != null) {
+                        list.forEach(task -> {
+                            if (task.getId_trabajador() != null) {
+                                String urlEmployee = ServiceUtils.SERVER + "/employees/" + task.getId_trabajador();
+                                ServiceUtils.getResponseAsync(urlEmployee, null, "GET")
+                                        .thenApply(json -> gson.fromJson(json, TrabajadorResponse.class))
+                                        .thenAccept(response -> task.setNombre_trabajador(response.getEmployee().getNombre() +
+                                                " " + response.getEmployee().getApellidos()))
+                                        .thenAccept(r -> Platform.runLater(() -> tbvTasks.getItems().setAll(list)))
+                                        .exceptionally(ex -> {
+                                            System.out.println("ERROR: " + ex.getMessage());
+                                            return null;
+                                        });
+                            }
+                        });
                     }
                 })
                 .exceptionally(ex -> {

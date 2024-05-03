@@ -3,9 +3,12 @@ package edu.tasklynx.tasklynxjavafx.controllers;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorListResponse;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import com.google.gson.Gson;
 import edu.tasklynx.tasklynxjavafx.model.Trabajador;
@@ -41,15 +44,45 @@ public class EmployeesController implements Initializable {
     private Label lblSpeciality;
     @FXML
     private Label lblEmail;
-    
+
     private List<Trabajador> list;
-    private static Gson gson;
-    
+    private Gson gson;
+    private boolean showDetail;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         gson = new Gson();
+
         detailContainer.getChildren().remove(blockDetail);
+        showDetail = false;
+
         loadEmployees();
+    }
+
+    public void onSelectedRow(MouseEvent mouseEvent) {
+        showTaskDetail();
+    }
+
+    public void onKeyReleased(KeyEvent keyEvent) {
+        showTaskDetail();
+    }
+
+    public void showTaskDetail() {
+        if (!showDetail) {
+            detailContainer.setAlignment(Pos.TOP_CENTER);
+            detailContainer.getChildren().add(blockDetail);
+            showDetail = true;
+        }
+
+        Trabajador trabajador = tbvEmployees.getSelectionModel().getSelectedItem();
+        if (trabajador != null) {
+            lblDetail.setText(trabajador.getNombre() + " " + trabajador.getApellidos() + " - Detail");
+            lblName.setText(trabajador.getNombre());
+            lblSurname.setText(trabajador.getApellidos());
+            lblDni.setText(trabajador.getDni());
+            lblSpeciality.setText(trabajador.getEspecialidad());
+            lblEmail.setText(trabajador.getEmail());
+        }
     }
 
     private void loadEmployees() {

@@ -358,4 +358,10 @@ router.get("/completed/:id", (req, res) => {
     res.status(200).send({ result: task });;
 });
 
+router.get("/employee/:id", (req, res) => {
+    const id = req.params.id;
+    const tasks = pendingTasks.filter(t => t.id_trabajador == id);
+    res.status(200).send({ result: tasks });;
+});
+
 module.exports = router;

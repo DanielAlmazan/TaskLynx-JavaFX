@@ -16,6 +16,7 @@ public class Trabajo {
     private float tiempo;
     private String prioridad;
     private String id_trabajador;
+    private String nombre_trabajador;
 
     public Trabajo(String categoria, String descripcion, Date fec_ini, Date fec_fin, float tiempo, String prioridad, String id_trabajador) {
         this.categoria = categoria;
@@ -83,8 +84,12 @@ public class Trabajo {
         this.id_trabajador = id_trabajador;
     }
 
-    public String getNombre() {
-        return "Paco";
+    public String getNombre_trabajador() {
+        return nombre_trabajador;
+    }
+
+    public void setNombre_trabajador(String nombre_trabajador) {
+        this.nombre_trabajador = nombre_trabajador;
     }
 
     @Override

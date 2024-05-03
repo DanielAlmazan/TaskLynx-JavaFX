@@ -28,7 +28,7 @@
                                 <Button id="btn-add-task" fx:id="btnAdd" mnemonicParsing="false" />
                             </children>
                         </HBox>
-                        <TableView fx:id="tbvTasks" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="tbvEmployees" VBox.vgrow="ALWAYS">
                             <columns>
                                 <TableColumn id="first-column" text="Name">
                                     <cellValueFactory>

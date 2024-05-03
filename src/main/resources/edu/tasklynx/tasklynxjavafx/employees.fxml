@@ -1,17 +1,191 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="766.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.tasklynx.tasklynxjavafx.controllers.EmployeesController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="766.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.tasklynx.tasklynxjavafx.controllers.EmployeesController">
     <children>
-        <ListView layoutX="16.0" layoutY="62.0" prefHeight="680.0" prefWidth="1270.0" />
-        <Label layoutX="591.0" layoutY="23.0" text="Employees">
-            <font>
-                <Font size="19.0" />
-            </font>
-        </Label>
+        <HBox prefHeight="766.0" prefWidth="1300.0" spacing="10.0">
+            <children>
+                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="750.0" spacing="10.0">
+                    <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                            <children>
+                                <Label text="Employees">
+                                    <font>
+                                        <Font size="19.0" />
+                                    </font>
+                                </Label>
+                                <Button id="btn-add-task" fx:id="btnAdd" mnemonicParsing="false" />
+                            </children>
+                        </HBox>
+                        <TableView fx:id="tbvTasks" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn id="first-column" text="Name">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="nombre" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn text="Surname">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="apellidos" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn id="last-column" text="Speciality">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="especialidad" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                            </columns>
+                        </TableView>
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </padding>
+                    <!--<HBox.margin>
+                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </HBox.margin>-->
+                    <styleClass>
+                        <String fx:value="container" />
+                        <String fx:value="secondary" />
+                    </styleClass>
+                </VBox>
+                <VBox prefHeight="766.0" prefWidth="750.0" spacing="10.0">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                    <children>
+                        <VBox fx:id="detailContainer" alignment="CENTER" prefHeight="383.0" spacing="10.0" styleClass="container, secondary">
+                            <children>
+                                <Label fx:id="lblDetail" text="Select an employee to see his details">
+                                    <font>
+                                        <Font size="19.0" />
+                                    </font>
+                                </Label>
+                                <VBox fx:id="blockDetail" prefWidth="100.0" spacing="10.0">
+                                    <children>
+                                        <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
+                                            <children>
+                                                <Button id="btn-edit-employee" mnemonicParsing="false" styleClass="btn, btn-accept" text="Edit employee">
+                                                    <font>
+                                                        <Font size="18.0" />
+                                                    </font>
+                                                </Button>
+                                                <Button id="btn-delete-employee" mnemonicParsing="false" styleClass="btn, btn-danger" text="Delete employee">
+                                                    <font>
+                                                        <Font size="18.0" />
+                                                    </font>
+                                                </Button>
+                                            </children>
+                                            <padding>
+                                                <Insets bottom="10.0" top="10.0" />
+                                            </padding>
+                                        </HBox>
+                                        <VBox prefWidth="100.0" spacing="5.0">
+                                            <children>
+                                                <HBox spacing="10.0">
+                                                    <children>
+                                                        <Label text="Name: ">
+                                                            <font>
+                                                                <Font size="19.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label fx:id="lblName" text="NAME">
+                                                            <font>
+                                                                <Font size="19.0" />
+                                                            </font>
+                                                        </Label>
+                                                    </children>
+                                                </HBox>
+                                                <HBox spacing="10.0">
+                                                    <children>
+                                                        <Label text="Surname: ">
+                                                            <font>
+                                                                <Font size="19.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label fx:id="lblSurname" text="SURNAME">
+                                                            <font>
+                                                                <Font size="19.0" />
+                                                            </font>
+                                                        </Label>
+                                                    </children>
+                                                </HBox>
+                                                <HBox spacing="10.0">
+                                                    <children>
+                                                        <Label text="DNI: ">
+                                                            <font>
+                                                                <Font size="19.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label fx:id="lblDni" text="DNI">
+                                                            <font>
+                                                                <Font size="19.0" />
+                                                            </font>
+                                                        </Label>
+                                                    </children>
+                                                </HBox>
+                                                <HBox spacing="10.0">
+                                                    <children>
+                                                        <Label text="Speciality: ">
+                                                            <font>
+                                                                <Font size="19.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label fx:id="lblSpeciality" text="SPECIALITY">
+                                                            <font>
+                                                                <Font size="19.0" />
+                                                            </font>
+                                                        </Label>
+                                                    </children>
+                                                </HBox>
+                                                <HBox spacing="10.0">
+                                                    <children>
+                                                        <Label text="Email: ">
+                                                            <font>
+                                                                <Font size="19.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label fx:id="lblEmail" text="EMAIL">
+                                                            <font>
+                                                                <Font size="19.0" />
+                                                            </font>
+                                                        </Label>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </padding>
+                        </VBox>
+                        <VBox alignment="CENTER" prefHeight="383.0" styleClass="container, secondary">
+                            <children>
+                                <Label text="Select an employee to see his pending tasks">
+                                    <font>
+                                        <Font size="19.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+        </HBox>
     </children>
 </Pane>

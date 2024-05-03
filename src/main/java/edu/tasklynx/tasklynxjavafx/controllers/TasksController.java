@@ -44,7 +44,6 @@ public class TasksController implements Initializable {
     @FXML
     private Label lblResponsible;
 
-    private List<Trabajo> list;
     private Gson gson;
 
     @Override

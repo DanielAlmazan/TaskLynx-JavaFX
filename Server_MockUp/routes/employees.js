@@ -36,4 +36,10 @@ router.get("/", (req, res) => {
     res.status(200).send({ result: employees });
 });
 
+router.get("/:id", (req, res) => {
+    const id = req.params.id;
+    const employee = employees.filter(e => e.id_trabajador == id)[0];
+    res.status(200).send({ result: employee });
+});
+
 module.exports = router;

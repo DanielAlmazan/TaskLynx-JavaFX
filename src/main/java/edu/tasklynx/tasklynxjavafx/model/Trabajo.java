@@ -1,6 +1,7 @@
 package edu.tasklynx.tasklynxjavafx.model;
 
 import com.google.gson.annotations.SerializedName;
+import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 
 import java.util.Date;
 
@@ -79,6 +80,10 @@ public class Trabajo {
 
     public void setId_trabajador(String id_trabajador) {
         this.id_trabajador = id_trabajador;
+    }
+
+    public String getNombre() {
+        return "";
     }
 
     @Override

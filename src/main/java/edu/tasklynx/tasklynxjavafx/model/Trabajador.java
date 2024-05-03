@@ -18,6 +18,8 @@ public class Trabajador {
         this.contraseña = contraseña;
         this.email = email;
     }
+    
+    public Trabajador() { }
 
     public String getDni() {
         return dni;

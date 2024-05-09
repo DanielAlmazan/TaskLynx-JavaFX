@@ -2,7 +2,7 @@ package edu.tasklynx.tasklynxjavafx.controllers;
 
 import com.google.gson.Gson;
 import edu.tasklynx.tasklynxjavafx.TaskLynxController;
-import edu.tasklynx.tasklynxjavafx.model.Trabajador;
+import edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.AssignEmployeeController;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
@@ -21,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -66,6 +67,18 @@ public class TasksController implements Initializable {
         // TODO
     }
 
+    @FXML
+    public void assignEmployee(ActionEvent actionEvent) {
+        Trabajo trabajo = tbvTasks.getSelectionModel().getSelectedItem();
+
+        if(trabajo != null) {
+            FXMLLoader view = new FXMLLoader(
+                    Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/assign-employee.fxml")));
+            TaskLynxController.showModal(view, actionEvent);
+            ((AssignEmployeeController) view.getController()).setTrabajo(trabajo);
+        }
+    }
+
     private void addImages() {
         URL linkAdd = getClass().getResource("/icons/btn-add.png");
 
@@ -96,7 +109,7 @@ public class TasksController implements Initializable {
             lblStartingDate.setText(trabajo.getFec_ini().toString());
             lblResponsible.setText(trabajo.getNombre_trabajador());
 
-            btnAssignEmployee.setDisable(trabajo.getId_trabajador() == null);
+            btnAssignEmployee.setDisable(trabajo.getId_trabajador() != null);
         }
     }
 
@@ -116,7 +129,7 @@ public class TasksController implements Initializable {
                     if (list != null) {
                         list.forEach(task -> {
                             if (task.getId_trabajador() != null) {
-                                String urlEmployee = ServiceUtils.SERVER + "/employees/" + task.getId_trabajador();
+                                String urlEmployee = ServiceUtils.SERVER + "/trabajadores/" + task.getId_trabajador();
                                 ServiceUtils.getResponseAsync(urlEmployee, null, "GET")
                                         .thenApply(json -> gson.fromJson(json, TrabajadorResponse.class))
                                         .thenAccept(response -> task.setNombre_trabajador(response.getEmployee().getNombre() +

@@ -28,7 +28,7 @@ public class TaskLynxController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        changePanel("tasks");
+        showTasks();
     }
 
     @FXML
@@ -79,11 +79,11 @@ public class TaskLynxController implements Initializable {
 
         try {
             mainScene = new Scene(view.load());
-        }  catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
         }
 
-        if(mainScene != null) {
+        if (mainScene != null) {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             Stage secondaryStage = new Stage();
             secondaryStage.setScene(mainScene);

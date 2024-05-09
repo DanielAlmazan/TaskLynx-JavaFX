@@ -1,25 +1,29 @@
 package edu.tasklynx.tasklynxjavafx.controllers;
 
-import edu.tasklynx.tasklynxjavafx.model.Trabajo;
+import com.google.gson.Gson;
+import edu.tasklynx.tasklynxjavafx.TaskLynxController;
+import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorListResponse;
+import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorResponse;
+import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import com.google.gson.Gson;
-import edu.tasklynx.tasklynxjavafx.model.Trabajador;
-import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorResponse;
-import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
-import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
-import javafx.application.Platform;
-import javafx.fxml.Initializable;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
@@ -56,7 +60,17 @@ public class EmployeesController implements Initializable {
         detailContainer.getChildren().remove(blockDetail);
         showDetail = false;
 
+        addImages();
+
         loadEmployees();
+    }
+
+    private void addImages() {
+        URL linkAdd = getClass().getResource("/icons/btn-add.png");
+
+        Image iconAdd = new Image(linkAdd.toString(), 24, 24, false, true);
+
+        btnAdd.setGraphic(new ImageView(iconAdd));
     }
 
     public void onSelectedRow(MouseEvent mouseEvent) {
@@ -65,6 +79,10 @@ public class EmployeesController implements Initializable {
 
     public void onKeyReleased(KeyEvent keyEvent) {
         showTaskDetail();
+    }
+
+    public void onAddEmployee(ActionEvent actionEvent) {
+        modalAddEmployee(actionEvent);
     }
 
     public void showTaskDetail() {
@@ -86,7 +104,7 @@ public class EmployeesController implements Initializable {
     }
 
     private void loadEmployees() {
-        String url = ServiceUtils.SERVER + "/employees";
+        String url = ServiceUtils.SERVER + "/trabajadores";
         ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenApply(json -> gson.fromJson(json, TrabajadorListResponse.class))
                 .thenAccept(response -> {
@@ -118,4 +136,14 @@ public class EmployeesController implements Initializable {
                     System.out.println("ERROR OBTENIENDO EMPLEADO 2: " + ex.getMessage());
                     return null;
                 });
-    }}
+    }
+
+    private void modalAddEmployee(ActionEvent actionEvent) {
+        FXMLLoader view = new FXMLLoader(
+                Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/newEmployeeModal.fxml")));
+        TaskLynxController.showModal(view, actionEvent);
+        loadEmployees();
+    }
+}
+
+

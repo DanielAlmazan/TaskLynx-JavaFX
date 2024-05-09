@@ -89,7 +89,7 @@ public class TaskLynxController implements Initializable {
             secondaryStage.setScene(mainScene);
             secondaryStage.initModality(Modality.WINDOW_MODAL);
             secondaryStage.initOwner(stage);
-            secondaryStage.show();
+            secondaryStage.showAndWait();
         }
     }
 }

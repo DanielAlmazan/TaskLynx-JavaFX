@@ -96,7 +96,7 @@ public class TasksController implements Initializable {
     }
 
     private void loadTasks() {
-        String url = ServiceUtils.SERVER + "/tasks/pending";
+        String url = ServiceUtils.SERVER + "/trabajos/pendientes";
         ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenApply(json -> gson.fromJson(json, TrabajoListResponse.class))
                 .thenApply(response -> {
@@ -112,7 +112,7 @@ public class TasksController implements Initializable {
                     if (list != null) {
                         list.forEach(task -> {
                             if (task.getId_trabajador() != null) {
-                                String urlEmployee = ServiceUtils.SERVER + "/employees/" + task.getId_trabajador();
+                                String urlEmployee = ServiceUtils.SERVER + "/trabajadores/" + task.getId_trabajador();
                                 ServiceUtils.getResponseAsync(urlEmployee, null, "GET")
                                         .thenApply(json -> gson.fromJson(json, TrabajadorResponse.class))
                                         .thenAccept(response -> task.setNombre_trabajador(response.getEmployee().getNombre() +

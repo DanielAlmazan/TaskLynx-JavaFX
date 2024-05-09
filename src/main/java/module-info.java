@@ -10,4 +10,5 @@ module edu.tasklynx.tasklynxjavafx {
     opens edu.tasklynx.tasklynxjavafx.model;
     opens edu.tasklynx.tasklynxjavafx.model.responses;
     opens edu.tasklynx.tasklynxjavafx.utils;
+    opens edu.tasklynx.tasklynxjavafx.controllers.modalsControllers to javafx.fxml;
 }

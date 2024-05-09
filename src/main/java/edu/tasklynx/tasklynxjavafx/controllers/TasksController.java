@@ -1,6 +1,8 @@
 package edu.tasklynx.tasklynxjavafx.controllers;
 
 import com.google.gson.Gson;
+import edu.tasklynx.tasklynxjavafx.TaskLynxController;
+import edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.AssignEmployeeController;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
@@ -8,6 +10,7 @@ import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -18,8 +21,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class TasksController implements Initializable {
@@ -59,6 +64,18 @@ public class TasksController implements Initializable {
     @FXML
     public void addTask(ActionEvent actionEvent) {
         // TODO
+    }
+
+    @FXML
+    public void assignEmployee(ActionEvent actionEvent) {
+        Trabajo trabajo = tbvTasks.getSelectionModel().getSelectedItem();
+
+        if(trabajo != null) {
+            FXMLLoader view = new FXMLLoader(
+                    Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/assign-employee.fxml")));
+            TaskLynxController.showModal(view, actionEvent);
+            ((AssignEmployeeController) view.getController()).setTrabajo(trabajo);
+        }
     }
 
     private void addImages() {

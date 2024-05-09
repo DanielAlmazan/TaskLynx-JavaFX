@@ -5,10 +5,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -54,11 +52,11 @@ public class TaskLynxController implements Initializable {
             panel.getChildren().setAll(secondPanel);
             changeActiveTab(view);
         } catch (IOException e) {
-            System.out.println("Error: "+ e.getMessage());
+            System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
         }
     }
-    
+
     private void changeActiveTab(String tab) {
         btnShowTasks.getStyleClass().remove("active");
         btnShowEmployees.getStyleClass().remove("active");
@@ -81,11 +79,11 @@ public class TaskLynxController implements Initializable {
 
         try {
             mainScene = new Scene(view.load());
-        }  catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
         }
 
-        if(mainScene != null) {
+        if (mainScene != null) {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             Stage secondaryStage = new Stage();
             secondaryStage.setScene(mainScene);

@@ -25,7 +25,7 @@
                                         <Font size="19.0" />
                                     </font>
                                 </Label>
-                                <Button id="btn-add-task" fx:id="btnAdd" mnemonicParsing="false" />
+                                <Button id="btn-add-task" fx:id="btnAdd" onAction="#onAddEmployee" mnemonicParsing="false" />
                             </children>
                         </HBox>
                         <TableView fx:id="tbvEmployees" onKeyReleased="#onKeyReleased" onMouseClicked="#onSelectedRow" VBox.vgrow="ALWAYS">

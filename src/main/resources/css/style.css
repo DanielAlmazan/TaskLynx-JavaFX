@@ -12,11 +12,11 @@
     -fx-background-radius: .5em;
 }
 
-.container.secondary {
+.secondary {
     -fx-background-color: -secondary-bg;
 }
 
-.container.tertiary {
+.tertiary {
     -fx-background-color: -main-bg;
 }
 

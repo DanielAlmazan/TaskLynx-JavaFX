@@ -72,4 +72,8 @@ public class Trabajador {
         this.especialidad = especialidad;
     }
 
+    @Override
+    public String toString() {
+        return nombre + " " + apellidos;
+    }
 }

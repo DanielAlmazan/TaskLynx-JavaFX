@@ -104,7 +104,7 @@ public class EmployeesController implements Initializable {
     }
 
     private void loadEmployees() {
-        String url = ServiceUtils.SERVER + "/employees";
+        String url = ServiceUtils.SERVER + "/trabajadores";
         ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenApply(json -> gson.fromJson(json, TrabajadorListResponse.class))
                 .thenAccept(response -> {
@@ -142,6 +142,7 @@ public class EmployeesController implements Initializable {
         FXMLLoader view = new FXMLLoader(
                 Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/newEmployeeModal.fxml")));
         TaskLynxController.showModal(view, actionEvent);
+        loadEmployees();
     }
 }
 

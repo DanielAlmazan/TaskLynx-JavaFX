@@ -20,3 +20,76 @@
     -fx-background-color: -main-bg;
 }
 
+
+ChoiceBox *, DatePicker *, TextField * {
+    -fx-background-color: -tab-bg;
+    -fx-background-radius: .5em;
+    -fx-border-radius: .5em;
+    -fx-fill-width: true;
+}
+
+.tertiary ChoiceBox *, .tertiary DatePicker *, .tertiary TextField {
+    -fx-background-color: -tab-bg;
+}
+
+.choice-box .arrow {
+    -fx-background-color: white;
+}
+
+/*choicebox list background*/
+.choice-box .context-menu {
+    -fx-min-width: 300;
+}
+
+
+.tertiary TextField *, .tertiary TextArea *, .tertiary ComboBox *, .tertiary DatePicker * {
+    -fx-primary-color: -secondary-bg;
+    -fx-secondary-color: -main-bg;
+    -fx-light-grey-color: -secondary-bg;
+
+    -fx-focus-color: -fx-secondary-color;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: -fx-primary-color;
+    -fx-background-radius: 0;
+}
+.date-picker .arrow-button:hover {
+    -fx-background-color: -fx-secondary-color;
+}
+.date-picker .arrow-button .arrow {
+    -fx-background-color: white;
+}
+.date-picker .cell {
+    -fx-background-color: -fx-secondary-color;
+}
+.date-picker * {
+    -fx-text-fill: white;
+}
+.date-picker .cell:hover {
+    -fx-background-color: -fx-light-grey-color;
+}
+.date-picker .cell:focused {
+    -fx-background-color: -fx-light-grey-color;
+}
+.date-picker .selected {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: white;
+}
+.date-picker .selected:focused {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: white;
+}
+.date-picker-popup  {
+    -fx-border-color: transparent;
+}
+.date-picker-popup .month-year-pane {
+    -fx-background-color: -fx-primary-color;
+}
+.date-picker-popup .month-year-pane .label {
+    -fx-text-fill: white;
+}
+.date-picker-popup .spinner .button .left-arrow,
+.date-picker-popup .spinner .button .right-arrow {
+    -fx-background-color: white;
+}

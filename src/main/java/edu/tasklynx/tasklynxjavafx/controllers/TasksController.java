@@ -23,6 +23,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -113,12 +114,11 @@ public class TasksController implements Initializable {
     }
 
     private void loadTasks() {
-        String url = ServiceUtils.SERVER + "/tasks/pending";
+        String url = ServiceUtils.SERVER + "/trabajos/pendientes";
         ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenApply(json -> gson.fromJson(json, TrabajoListResponse.class))
                 .thenApply(response -> {
                     if (!response.isError()) {
-//                        Platform.runLater(() -> tbvTasks.getItems().setAll(response.getJobs()));
                         return response.getJobs();
                     } else {
                         System.out.println("ERROR OBTENIENDO LISTA 1: " + response.getErrorMessage());
@@ -129,7 +129,7 @@ public class TasksController implements Initializable {
                     if (list != null) {
                         list.forEach(task -> {
                             if (task.getId_trabajador() != null) {
-                                String urlEmployee = ServiceUtils.SERVER + "/employees/" + task.getId_trabajador();
+                                String urlEmployee = ServiceUtils.SERVER + "/trabajadores/" + task.getId_trabajador();
                                 ServiceUtils.getResponseAsync(urlEmployee, null, "GET")
                                         .thenApply(json -> gson.fromJson(json, TrabajadorResponse.class))
                                         .thenAccept(response -> task.setNombre_trabajador(response.getEmployee().getNombre() +
@@ -148,4 +148,12 @@ public class TasksController implements Initializable {
                     return null;
                 });
     }
+
+    public void openNewTaskModal(ActionEvent actionEvent) {
+        FXMLLoader view = new FXMLLoader(
+                Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/newTaskModal.fxml")));
+        TaskLynxController.showModal(view, actionEvent);
+    }
 }
+
+// /Users/sho/DAM-DAW/TaskLynx-JavaFX/src/main/java/edu/tasklynx/tasklynxjavafx/controllers/TasksController.java

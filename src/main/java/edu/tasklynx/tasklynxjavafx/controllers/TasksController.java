@@ -91,7 +91,7 @@ public class TasksController implements Initializable {
             lblStartingDate.setText(trabajo.getFec_ini().toString());
             lblResponsible.setText(trabajo.getNombre_trabajador());
 
-            btnAssignEmployee.setDisable(trabajo.getId_trabajador() == null);
+            btnAssignEmployee.setDisable(trabajo.getId_trabajador() != null);
         }
     }
 

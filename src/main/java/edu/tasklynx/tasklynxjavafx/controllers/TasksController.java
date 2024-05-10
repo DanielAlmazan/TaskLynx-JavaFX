@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import edu.tasklynx.tasklynxjavafx.TaskLynxController;
 import edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.AssignEmployeeController;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
-import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
@@ -110,9 +109,9 @@ public class TasksController implements Initializable {
             lblDetail.setText(trabajo.getCategoria() + " - Detail");
             lblDescription.setText(trabajo.getDescripcion());
             lblStartingDate.setText(trabajo.getFecIni().toString());
-            lblResponsible.setText(trabajo.getNombre_trabajador());
+            lblResponsible.setText(trabajo.getNombreTrabajador());
 
-            btnAssignEmployee.setDisable(trabajo.getId_trabajador() != null);
+            btnAssignEmployee.setDisable(trabajo.getIdTrabajador() != null);
         }
     }
 
@@ -120,32 +119,12 @@ public class TasksController implements Initializable {
         String url = ServiceUtils.SERVER + "/trabajos/pendientes";
         ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenApply(json -> gson.fromJson(json, TrabajoListResponse.class))
-                .thenApply(response -> {
+                .thenAccept(response -> {
                     if (!response.isError()) {
-                        return response.getJobs();
+                        Platform.runLater(() -> tbvTasks.getItems().setAll(response.getJobs()));
                     } else {
                         System.out.println("ERROR OBTENIENDO LISTA 1: " + response.getErrorMessage());
-                        return null;
                     }
-                })
-                .thenAccept(list -> {
-                    if (list != null) {
-                        list.forEach(task -> {
-                            if (task.getId_trabajador() != null) {
-                                String urlEmployee = ServiceUtils.SERVER + "/trabajadores/" + task.getId_trabajador();
-                                ServiceUtils.getResponseAsync(urlEmployee, null, "GET")
-                                        .thenApply(json -> gson.fromJson(json, TrabajadorResponse.class))
-                                        .thenAccept(response -> task.setNombre_trabajador(response.getEmployee().getNombre() +
-                                                " " + response.getEmployee().getApellidos()))
-                                        .thenAccept(r -> Platform.runLater(() -> tbvTasks.getItems().setAll(list)))
-                                        .exceptionally(ex -> {
-                                            System.out.println("ERROR: " + ex.getMessage());
-                                            return null;
-                                        });
-                            }
-                        });
-                    }
-                    Platform.runLater(() -> tbvTasks.getItems().setAll(list));
                 })
                 .exceptionally(ex -> {
                     System.out.println("ERROR OBTENIENDO LISTA 2: " + ex.getMessage());

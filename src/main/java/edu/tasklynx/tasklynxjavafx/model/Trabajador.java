@@ -3,8 +3,9 @@ package edu.tasklynx.tasklynxjavafx.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Trabajador {
-    @SerializedName("id_trabajador")
-    private String id_trabajador;
+
+    @SerializedName("idTrabajador")
+    private String idTrabajador;
     private String dni;
     private String nombre;
     private String apellidos;
@@ -13,8 +14,8 @@ public class Trabajador {
 
     private String especialidad;
 
-    public Trabajador(String id_trabajador, String dni, String nombre, String apellidos, String contraseña, String email, String especialidad) {
-        this.id_trabajador = id_trabajador;
+    public Trabajador(String idTrabajador, String dni, String nombre, String apellidos, String contraseña, String email, String especialidad) {
+        this.idTrabajador = idTrabajador;
         this.dni = dni;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -24,6 +25,14 @@ public class Trabajador {
     }
     
     public Trabajador() { }
+
+    public String getIdTrabajador() {
+        return idTrabajador;
+    }
+
+    public void setIdTrabajador(String idTrabajador) {
+        this.idTrabajador = idTrabajador;
+    }
 
     public String getDni() {
         return dni;
@@ -75,6 +84,6 @@ public class Trabajador {
 
     @Override
     public String toString() {
-        return nombre + " " + apellidos;
+        return idTrabajador == null ? "" : idTrabajador + " - " + nombre + " " + apellidos;
     }
 }

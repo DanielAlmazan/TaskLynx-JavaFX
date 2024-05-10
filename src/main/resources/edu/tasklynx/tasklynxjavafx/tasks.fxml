@@ -42,7 +42,7 @@
                         </TableColumn>
                         <TableColumn id="last-column" prefWidth="200.0" text="Responsable">
                            <cellValueFactory>
-                              <PropertyValueFactory property="nombre_trabajador" />
+                              <PropertyValueFactory property="nombreTrabajador" />
                            </cellValueFactory>
                         </TableColumn>
                      </columns>

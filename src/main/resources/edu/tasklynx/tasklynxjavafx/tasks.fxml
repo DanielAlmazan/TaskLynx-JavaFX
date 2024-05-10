@@ -37,7 +37,7 @@
                         </TableColumn>
                         <TableColumn prefWidth="200.0" text="Fecha inicio">
                            <cellValueFactory>
-                              <PropertyValueFactory property="fec_ini" />
+                              <PropertyValueFactory property="fecIni" />
                            </cellValueFactory>
                         </TableColumn>
                         <TableColumn id="last-column" prefWidth="200.0" text="Responsable">

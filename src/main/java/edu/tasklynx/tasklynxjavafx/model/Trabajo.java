@@ -14,7 +14,7 @@ public class Trabajo {
     private Float tiempo;
     private int prioridad;
     private Trabajador idTrabajador;
-    private String nombre_trabajador;
+    private String nombreTrabajador;
 
     public Trabajo(String codTrabajo, String categoria, String descripcion, LocalDate fecIni, LocalDate fecFin, Float tiempo, Integer prioridad, Trabajador idTrabajador) {
         this.codTrabajo = codTrabajo;
@@ -75,7 +75,7 @@ public class Trabajo {
         this.prioridad = prioridad;
     }
 
-    public Trabajador getId_trabajador() {
+    public Trabajador getIdTrabajador() {
         return idTrabajador;
     }
 
@@ -83,12 +83,8 @@ public class Trabajo {
         this.idTrabajador = id_trabajador;
     }
 
-    public String getNombre_trabajador() {
-        return nombre_trabajador;
-    }
-
-    public void setNombre_trabajador(String nombre_trabajador) {
-        this.nombre_trabajador = nombre_trabajador;
+    public String getNombreTrabajador() {
+        return idTrabajador.toString();
     }
 
     @Override

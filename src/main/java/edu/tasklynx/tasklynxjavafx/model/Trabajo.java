@@ -1,31 +1,30 @@
 package edu.tasklynx.tasklynxjavafx.model;
 
 import com.google.gson.annotations.SerializedName;
-import edu.tasklynx.tasklynxjavafx.controllers.EmployeesController;
-import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Trabajo {
-    @SerializedName("cod_trabajo")
-    private String cod_trabajo;
+    @SerializedName("codTrabajo")
+    private String codTrabajo;
     private String categoria;
     private String descripcion;
-    private Date fec_ini;
-    private Date fec_fin;
-    private float tiempo;
-    private String prioridad;
-    private String id_trabajador;
+    private LocalDate fecIni;
+    private LocalDate fecFin;
+    private Float tiempo;
+    private int prioridad;
+    private Trabajador idTrabajador;
     private String nombre_trabajador;
 
-    public Trabajo(String categoria, String descripcion, Date fec_ini, Date fec_fin, float tiempo, String prioridad, String id_trabajador) {
+    public Trabajo(String codTrabajo, String categoria, String descripcion, LocalDate fecIni, LocalDate fecFin, Float tiempo, Integer prioridad, Trabajador idTrabajador) {
+        this.codTrabajo = codTrabajo;
         this.categoria = categoria;
         this.descripcion = descripcion;
-        this.fec_ini = fec_ini;
-        this.fec_fin = fec_fin;
+        this.fecIni = fecIni;
+        this.fecFin = fecFin;
         this.tiempo = tiempo;
         this.prioridad = prioridad;
-        this.id_trabajador = id_trabajador;
+        this.idTrabajador = idTrabajador;
     }
 
     public String getCategoria() {
@@ -44,20 +43,20 @@ public class Trabajo {
         this.descripcion = descripcion;
     }
 
-    public Date getFec_ini() {
-        return fec_ini;
+    public LocalDate getFecIni() {
+        return fecIni;
     }
 
-    public void setFec_ini(Date fec_ini) {
-        this.fec_ini = fec_ini;
+    public void setFecIni(LocalDate fec_ini) {
+        this.fecIni = fec_ini;
     }
 
-    public Date getFec_fin() {
-        return fec_fin;
+    public LocalDate getFecFin() {
+        return fecFin;
     }
 
-    public void setFec_fin(Date fec_fin) {
-        this.fec_fin = fec_fin;
+    public void setFecFin(LocalDate fec_fin) {
+        this.fecFin = fec_fin;
     }
 
     public float getTiempo() {
@@ -68,20 +67,20 @@ public class Trabajo {
         this.tiempo = tiempo;
     }
 
-    public String getPrioridad() {
+    public int getPrioridad() {
         return prioridad;
     }
 
-    public void setPrioridad(String prioridad) {
+    public void setPrioridad(int prioridad) {
         this.prioridad = prioridad;
     }
 
-    public String getId_trabajador() {
-        return id_trabajador;
+    public Trabajador getId_trabajador() {
+        return idTrabajador;
     }
 
-    public void setId_trabajador(String id_trabajador) {
-        this.id_trabajador = id_trabajador;
+    public void setId_trabajador(Trabajador id_trabajador) {
+        this.idTrabajador = id_trabajador;
     }
 
     public String getNombre_trabajador() {
@@ -95,14 +94,14 @@ public class Trabajo {
     @Override
     public String toString() {
         return "Trabajo{" +
-                "cod_trabajo='" + cod_trabajo + '\'' +
+                "cod_trabajo='" + codTrabajo + '\'' +
                 ", categoria='" + categoria + '\'' +
                 ", descripcion='" + descripcion + '\'' +
-                ", fec_ini=" + fec_ini +
-                ", fec_fin=" + fec_fin +
+                ", fec_ini=" + fecIni +
+                ", fec_fin=" + fecFin +
                 ", tiempo=" + tiempo +
                 ", prioridad='" + prioridad + '\'' +
-                ", id_trabajador='" + id_trabajador + '\'' +
+                ", id_trabajador='" + idTrabajador + '\'' +
                 '}';
     }
 }

@@ -21,9 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -106,7 +104,7 @@ public class TasksController implements Initializable {
         if (trabajo != null) {
             lblDetail.setText(trabajo.getCategoria() + " - Detail");
             lblDescription.setText(trabajo.getDescripcion());
-            lblStartingDate.setText(trabajo.getFec_ini().toString());
+            lblStartingDate.setText(trabajo.getFecIni().toString());
             lblResponsible.setText(trabajo.getNombre_trabajador());
 
             btnAssignEmployee.setDisable(trabajo.getId_trabajador() != null);

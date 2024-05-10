@@ -1,11 +1,13 @@
 package edu.tasklynx.tasklynxjavafx.controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import edu.tasklynx.tasklynxjavafx.TaskLynxController;
 import edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.AssignEmployeeController;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
+import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -23,6 +25,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -55,7 +58,9 @@ public class TasksController implements Initializable {
         showDetail = false;
 
         addImages();
-        gson = new Gson();
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
 
         loadTasks();
     }
@@ -140,6 +145,7 @@ public class TasksController implements Initializable {
                             }
                         });
                     }
+                    Platform.runLater(() -> tbvTasks.getItems().setAll(list));
                 })
                 .exceptionally(ex -> {
                     System.out.println("ERROR OBTENIENDO LISTA 2: " + ex.getMessage());

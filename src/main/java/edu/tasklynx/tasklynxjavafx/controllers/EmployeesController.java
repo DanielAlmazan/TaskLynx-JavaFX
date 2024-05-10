@@ -1,11 +1,11 @@
 package edu.tasklynx.tasklynxjavafx.controllers;
 
 import com.google.gson.Gson;
-import edu.tasklynx.tasklynxjavafx.TaskLynxController;
 import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorListResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorResponse;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
+import edu.tasklynx.tasklynxjavafx.utils.Utils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -141,7 +141,7 @@ public class EmployeesController implements Initializable {
     private void modalAddEmployee(ActionEvent actionEvent) {
         FXMLLoader view = new FXMLLoader(
                 Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/newEmployeeModal.fxml")));
-        TaskLynxController.showModal(view, actionEvent);
+        Utils.showModal(view, actionEvent).showAndWait();
         loadEmployees();
     }
 }

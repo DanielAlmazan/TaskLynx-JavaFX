@@ -7,6 +7,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
@@ -151,14 +152,57 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="383.0" styleClass="container, secondary">
+                  <VBox fx:id="panelAssigments" alignment="TOP_CENTER" prefHeight="383.0" spacing="10.0" styleClass="container, secondary">
                      <children>
-                        <Label text="There are no assignments to confirm">
-                           <font>
-                              <Font size="19.0" />
-                           </font>
-                        </Label>
+                        <BorderPane>
+                           <center>
+                              <Label fx:id="lblAssignments" text="There are no assignments to confirm" BorderPane.alignment="CENTER">
+                                 <font>
+                                    <Font size="19.0" />
+                                 </font>
+                              </Label>
+                           </center>
+                           <right>
+                              <Button fx:id="btnConfirmTasks" mnemonicParsing="false" onAction="#confirmAssignments" styleClass="btn,btn-accept" text="Confirm tasks" BorderPane.alignment="CENTER">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Button>
+                           </right>
+                           <left>
+                              <Button mnemonicParsing="false" styleClass="btn,btn-accept" text="Confirm tasks" visible="false" BorderPane.alignment="CENTER">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Button>
+                           </left>
+                        </BorderPane>
+                        <TableView fx:id="tbvTasksToConfirm" onKeyReleased="#onKeyReleased" onMouseClicked="#onSelectedRow">
+                           <columns>
+                              <TableColumn id="first-column" prefWidth="200.0" text="Categoría">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="categoria" />
+                                 </cellValueFactory>
+                              </TableColumn>
+                              <TableColumn prefWidth="200.0" text="Fecha inicio">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="fecIni" />
+                                 </cellValueFactory>
+                              </TableColumn>
+                              <TableColumn id="last-column" prefWidth="200.0" text="Responsable">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="nombreTrabajador" />
+                                 </cellValueFactory>
+                              </TableColumn>
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
                      </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
                   </VBox>
                </children>
             </VBox>

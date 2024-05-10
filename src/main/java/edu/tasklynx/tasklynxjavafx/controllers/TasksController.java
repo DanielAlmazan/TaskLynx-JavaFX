@@ -2,12 +2,13 @@ package edu.tasklynx.tasklynxjavafx.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import edu.tasklynx.tasklynxjavafx.TaskLynxController;
 import edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.AssignEmployeeController;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
+import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoResponse;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
+import edu.tasklynx.tasklynxjavafx.utils.Utils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,13 +23,24 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class TasksController implements Initializable {
+    @FXML
+    private VBox panelAssigments;
+    @FXML
+    private Label lblAssignments;
+    @FXML
+    private Button btnConfirmTasks;
+    @FXML
+    private TableView<Trabajo> tbvTasksToConfirm;
     @FXML
     private TableView<Trabajo> tbvTasks;
     @FXML
@@ -49,36 +61,72 @@ public class TasksController implements Initializable {
     private Label lblResponsible;
 
     private Gson gson;
-    private boolean showDetail;
+    public static List<Trabajo> trabajosToConfirm;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        detailContainer.getChildren().remove(blockDetail);
-        showDetail = false;
+        lblAssignments.setText("There are no assignments to confirm");
+        panelAssigments.setAlignment(Pos.CENTER);
+        panelAssigments.getChildren().remove(tbvTasksToConfirm);
+        btnConfirmTasks.setVisible(false);
 
-        addImages();
+        trabajosToConfirm = new ArrayList<>();
+
         gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .create();
 
+        addImages();
+        toggleDetailView();
         loadTasks();
-    }
-
-    @FXML
-    public void addTask(ActionEvent actionEvent) {
-        // TODO
     }
 
     @FXML
     public void assignEmployee(ActionEvent actionEvent) {
         Trabajo trabajo = tbvTasks.getSelectionModel().getSelectedItem();
 
-        if(trabajo != null) {
+        if (trabajo != null) {
             FXMLLoader view = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/assign-employee.fxml")));
-            TaskLynxController.showModal(view, actionEvent);
+            Stage modal = Utils.showModal(view, actionEvent);
+            modal.setOnHidden((e) -> Platform.runLater(() -> {
+                if (!trabajosToConfirm.isEmpty()) {
+                    lblAssignments.setText("Assigned Tasks");
+                    panelAssigments.setAlignment(Pos.TOP_CENTER);
+                    panelAssigments.getChildren().add(tbvTasksToConfirm);
+                    btnConfirmTasks.setVisible(true);
+                    tbvTasksToConfirm.getItems().setAll(trabajosToConfirm);
+                }
+            }));
+            modal.show();
             ((AssignEmployeeController) view.getController()).setTrabajo(trabajo);
         }
+    }
+
+    @FXML
+    public void openNewTaskModal(ActionEvent actionEvent) {
+        FXMLLoader view = new FXMLLoader(
+                Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/newTaskModal.fxml")));
+        Utils.showModal(view, actionEvent).showAndWait();
+        loadTasks();
+    }
+
+    @FXML
+    public void confirmAssignments(ActionEvent actionEvent) {
+        System.out.println("PRUEBA");
+
+        /*trabajosToConfirm.forEach(trabajo -> {
+            String url = ServiceUtils.SERVER + "/trabajos/" + trabajo.getCodTrabajo();
+            String data = gson.toJson(trabajo);
+
+            ServiceUtils.getResponseAsync(url, data, "PUT")
+                    .thenApply(json -> gson.fromJson(json, TrabajoResponse.class))
+                    .exceptionally(ex -> {
+                        System.out.println("Error actualizando trabajo: " + ex.getMessage());
+                        return null;
+                    });
+
+        });*/
     }
 
     private void addImages() {
@@ -90,32 +138,37 @@ public class TasksController implements Initializable {
     }
 
     public void onSelectedRow(MouseEvent mouseEvent) {
-        showTaskDetail();
+        toggleDetailView();
     }
 
     public void onKeyReleased(KeyEvent keyEvent) {
-        showTaskDetail();
+        toggleDetailView();
     }
 
-    public void showTaskDetail() {
-        if (!showDetail) {
-            detailContainer.setAlignment(Pos.TOP_CENTER);
-            detailContainer.getChildren().add(blockDetail);
-            showDetail = true;
-        }
-
+    public void toggleDetailView() {
         Trabajo trabajo = tbvTasks.getSelectionModel().getSelectedItem();
+
         if (trabajo != null) {
+            if (!detailContainer.getChildren().contains(blockDetail)) {
+                detailContainer.setAlignment(Pos.TOP_CENTER);
+                detailContainer.getChildren().add(blockDetail);
+            }
+
             lblDetail.setText(trabajo.getCategoria() + " - Detail");
             lblDescription.setText(trabajo.getDescripcion());
             lblStartingDate.setText(trabajo.getFecIni().toString());
             lblResponsible.setText(trabajo.getNombreTrabajador());
 
             btnAssignEmployee.setDisable(trabajo.getIdTrabajador() != null);
+        } else {
+            lblDetail.setText("Select a task to see his details");
+            detailContainer.setAlignment(Pos.CENTER);
+            detailContainer.getChildren().remove(blockDetail);
         }
     }
 
     private void loadTasks() {
+        tbvTasks.getSelectionModel().clearSelection();
         String url = ServiceUtils.SERVER + "/trabajos/pendientes";
         ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenApply(json -> gson.fromJson(json, TrabajoListResponse.class))
@@ -131,12 +184,4 @@ public class TasksController implements Initializable {
                     return null;
                 });
     }
-
-    public void openNewTaskModal(ActionEvent actionEvent) {
-        FXMLLoader view = new FXMLLoader(
-                Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/newTaskModal.fxml")));
-        TaskLynxController.showModal(view, actionEvent);
-    }
 }
-
-// /Users/sho/DAM-DAW/TaskLynx-JavaFX/src/main/java/edu/tasklynx/tasklynxjavafx/controllers/TasksController.java

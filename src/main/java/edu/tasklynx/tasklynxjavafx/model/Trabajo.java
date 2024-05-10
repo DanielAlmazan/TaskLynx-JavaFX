@@ -27,6 +27,10 @@ public class Trabajo {
         this.idTrabajador = idTrabajador;
     }
 
+    public String getCodTrabajo() {
+        return codTrabajo;
+    }
+
     public String getCategoria() {
         return categoria;
     }
@@ -84,7 +88,7 @@ public class Trabajo {
     }
 
     public String getNombreTrabajador() {
-        return idTrabajador.toString();
+        return idTrabajador == null ? "" : idTrabajador.toString();
     }
 
     @Override

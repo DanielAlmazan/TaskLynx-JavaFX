@@ -1,15 +1,10 @@
 package edu.tasklynx.tasklynxjavafx;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -71,25 +66,6 @@ public class TaskLynxController implements Initializable {
             case "reports":
                 btnShowReports.getStyleClass().add("active");
                 break;
-        }
-    }
-
-    public static void showModal(FXMLLoader view, ActionEvent actionEvent) {
-        Scene mainScene = null;
-
-        try {
-            mainScene = new Scene(view.load());
-        } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-
-        if (mainScene != null) {
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            Stage secondaryStage = new Stage();
-            secondaryStage.setScene(mainScene);
-            secondaryStage.initModality(Modality.WINDOW_MODAL);
-            secondaryStage.initOwner(stage);
-            secondaryStage.showAndWait();
         }
     }
 }

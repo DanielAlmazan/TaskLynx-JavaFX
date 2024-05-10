@@ -10,7 +10,7 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" styleClass="secondary" stylesheets="@../../../../css/style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.AssignEmployeeController">
    <children>
-      <HBox alignment="CENTER" prefHeight="45.0" prefWidth="400.0" spacing="5.0" styleClass="container,tertiary">
+      <HBox alignment="CENTER" prefHeight="45.0" prefWidth="420.0" spacing="5.0" styleClass="container,tertiary">
          <children>
             <Label fx:id="lblTitle" text="Select a employee for">
                <font>
@@ -40,7 +40,7 @@
                         <Font size="15.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnConfirm" mnemonicParsing="false" styleClass="btn,btn-accept" text="Confirm">
+                  <Button fx:id="btnConfirm" mnemonicParsing="false" onAction="#confirmModal" styleClass="btn,btn-accept" text="Confirm">
                      <font>
                         <Font size="15.0" />
                      </font>

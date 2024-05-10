@@ -1,60 +1,159 @@
 package edu.tasklynx.tasklynxjavafx.controllers.modalsControllers;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorResponse;
+import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
+import java.time.LocalDate;
 
 public class newEmployeeModalController {
 
     @FXML
-    private TextField tiId;
+    public Label lblErrorId;
     @FXML
-    private TextField tiDni;
+    public Label lblErrorDni;
     @FXML
-    private TextField tiName;
+    public Label lblErrorName;
     @FXML
-    private TextField tiSurname;
+    public Label lblErrorSurname;
     @FXML
-    private TextField tiPassword;
+    public Label lblErrorPassword;
     @FXML
-    private TextField tiSpeciality;
+    public Label lblErrorSpeciality;
     @FXML
-    private TextField tiEmail;
-    @FXML
-    private Button btnAddEmployee;
-    @FXML
-    private Button btnCancel;
+    public Label lblErrorEmail;
 
-    Gson gson;
+    @FXML
+    public TextField tiId;
+    @FXML
+    public TextField tiDni;
+    @FXML
+    public TextField tiName;
+    @FXML
+    public TextField tiSurname;
+    @FXML
+    public TextField tiPassword;
+    @FXML
+    public TextField tiSpeciality;
+    @FXML
+    public TextField tiEmail;
 
-    private void addEmployee() {
+    @FXML
+    public Button btnAddEmployee;
+    @FXML
+    public Button btnCancel;
 
-        // Get the data from the form
-        String id = tiId.getText();
-        String dni = tiDni.getText();
-        String name = tiName.getText();
-        String surname = tiSurname.getText();
-        String password = tiPassword.getText();
-        String speciality = tiSpeciality.getText();
-        String email = tiEmail.getText();
+    private Gson gson;
+
+    //region Checkings for the fields
+    private String checkId(String id) {
+        if (id == null || id.isEmpty()) {
+            return "The ID is required.";
+        } else if (id.length() > 5) {
+            return "The ID must be less than 5 characters.";
+        }
+        return null;
+    }
+
+    private String checkDNI(String DNI) {
+        if (DNI == null || DNI.isEmpty()) {
+            return "The DNI is required.";
+        } else if (DNI.length() > 9) {
+            return "The DNI must be less than 9 characters.";
+        }
+        return null;
+    }
+
+    private String checkName(String name) {
+        if (name.length() > 100) {
+            return "The name must be less than 100 characters.";
+        }
+        return null;
+    }
+
+    private String checkSurname(String surname) {
+        if (surname.length() > 100) {
+            return "The surname must be less than 100 characters.";
+        }
+        return null;
+    }
+
+    private String checkSpeciality(String speciality) {
+        if (speciality == null || speciality.isEmpty()) {
+            return "The speciality is required.";
+        } else if (speciality.length() > 50) {
+            return "The speciality must be less than 50 characters.";
+        }
+        return null;
+    }
+
+    private String checkPassword(String password) {
+        if (password == null || password.isEmpty()) {
+            return "The password is required.";
+        } else if (password.length() > 50) {
+            return "The password must be less than 50 characters.";
+        }
+        return null;
+    }
+
+    private String checkEmail(String email) {
+        if (email.length() > 150) {
+            return "The email must be less than 150 characters.";
+        }
+        return null;
+    }
+
+    private boolean checkFields() {
+        // Check the fields for errors
+        lblErrorId.setText(checkId(tiId.getText()));
+        lblErrorDni.setText(checkDNI(tiDni.getText()));
+        lblErrorName.setText(checkName(tiName.getText()));
+        lblErrorSurname.setText(checkSurname(tiSurname.getText()));
+        lblErrorSpeciality.setText(checkSpeciality(tiSpeciality.getText()));
+        lblErrorPassword.setText(checkPassword(tiPassword.getText()));
+        lblErrorEmail.setText(checkEmail(tiEmail.getText()));
+
+        // Show the error labels if there is an error
+        lblErrorId.setVisible(lblErrorId.getText() != null);
+        lblErrorDni.setVisible(lblErrorDni.getText() != null);
+        lblErrorName.setVisible(lblErrorName.getText() != null);
+        lblErrorSurname.setVisible(lblErrorSurname.getText() != null);
+        lblErrorSpeciality.setVisible(lblErrorSpeciality.getText() != null);
+        lblErrorPassword.setVisible(lblErrorPassword.getText() != null);
+        lblErrorEmail.setVisible(lblErrorEmail.getText() != null);
+
+        // Return if there is an error
+        return lblErrorId.isVisible()
+                && lblErrorDni.isVisible()
+                && lblErrorName.isVisible()
+                && lblErrorSurname.isVisible()
+                && lblErrorSpeciality.isVisible()
+                && lblErrorPassword.isVisible()
+                && lblErrorEmail.isVisible();
+    }
+
+    //endregion
+
+    // Method to add a new employee
+    private void addEmployee(Trabajador employee) {
+
+        String url = ServiceUtils.SERVER + "/trabajadores";
 
         // Serialize the data to JSON
-        String url = ServiceUtils.SERVER + "/trabajadores";
-        String data = "{\n" +
-                "  \"idTrabajador\": \"" + id + "\",\n" +
-                "  \"dni\": \"" + dni + "\",\n" +
-                "  \"nombre\": \"" + name + "\",\n" +
-                "  \"apellidos\": \"" + surname + "\",\n" +
-                "  \"especialidad\": \"" + speciality + "\",\n" +
-                "  \"contraseña\": \"" + password + "\",\n" +
-                "  \"email\": \"" + email + "\"\n" +
-                "}";
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
+        String data = gson.toJson(employee);
 
         // Call to the service to add the new employee
         ServiceUtils.getResponseAsync(url, data, "POST")
@@ -83,13 +182,30 @@ public class newEmployeeModalController {
                 });
     }
 
-    @FXML
-    private void onAddEmployeeBtn() {
-        addEmployee();
+
+    // Event handlers
+    public void onAddEmployeeBtn() {
+        if (!checkFields()) {
+            try {
+                Trabajador employee = new Trabajador(
+                        tiId.getText(),
+                        tiDni.getText(),
+                        tiName.getText(),
+                        tiSurname.getText(),
+                        tiPassword.getText(),
+                        tiEmail.getText(),
+                        tiSpeciality.getText()
+                );
+                addEmployee(employee);
+            } catch (NullPointerException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Error: There are errors in the form.");
+        }
     }
 
-    @FXML
-    private void onCancelBtn() {
+    public void onCancelBtn() {
         ((Stage) btnCancel.getScene().getWindow()).close();
     }
 }

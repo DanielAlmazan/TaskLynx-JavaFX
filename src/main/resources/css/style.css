@@ -21,14 +21,14 @@
 }
 
 
-ChoiceBox *, DatePicker *, TextField * {
+ChoiceBox *, DatePicker *, TextField *, PasswordField * {
     -fx-background-color: -tab-bg;
     -fx-background-radius: .5em;
     -fx-border-radius: .5em;
     -fx-fill-width: true;
 }
 
-.tertiary ChoiceBox *, .tertiary DatePicker *, .tertiary TextField {
+.tertiary ChoiceBox *, .tertiary DatePicker *, .tertiary TextField, .tertiary PasswordField {
     -fx-background-color: -tab-bg;
 }
 
@@ -42,7 +42,7 @@ ChoiceBox *, DatePicker *, TextField * {
 }
 
 
-.tertiary TextField *, .tertiary TextArea *, .tertiary ComboBox *, .tertiary DatePicker * {
+.tertiary TextField *, .tertiary TextArea *, .tertiary ComboBox *, .tertiary DatePicker *, .tertiary PasswordField * {
     -fx-primary-color: -secondary-bg;
     -fx-secondary-color: -main-bg;
     -fx-light-grey-color: -secondary-bg;

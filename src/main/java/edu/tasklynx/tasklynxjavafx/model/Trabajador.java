@@ -13,7 +13,8 @@ public class Trabajador {
 
     private String especialidad;
 
-    public Trabajador(String dni, String nombre, String apellidos, String contraseña, String email, String especialidad) {
+    public Trabajador(String id_trabajador, String dni, String nombre, String apellidos, String contraseña, String email, String especialidad) {
+        this.id_trabajador = id_trabajador;
         this.dni = dni;
         this.nombre = nombre;
         this.apellidos = apellidos;

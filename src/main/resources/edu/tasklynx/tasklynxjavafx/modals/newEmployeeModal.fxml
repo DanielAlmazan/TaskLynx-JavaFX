@@ -1,66 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<VBox alignment="TOP_CENTER" spacing="10.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.newEmployeeModalController">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" spacing="10.0" styleClass="secondary" stylesheets="@../../../../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.newEmployeeModalController">
     <children>
-        <Label alignment="TOP_CENTER" text="New Task" textAlignment="CENTER"/>
-        <VBox prefHeight="200.0" spacing="10.0">
+        <Label alignment="TOP_CENTER" styleClass="container, tertiary" text="Add employee" textAlignment="CENTER">
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="10.0" left="80.0" right="80.0" top="10.0" />
+         </padding></Label>
+        <VBox prefHeight="200.0" spacing="10.0" styleClass="container,tertiary">
             <children>
                 <VBox spacing="5.0">
                     <children>
-                        <Label alignment="TOP_CENTER" text="ID *" textAlignment="CENTER"/>
-                        <TextField fx:id="tiId" minWidth="200.0"/>
+                        <Label alignment="TOP_CENTER" text="ID *" textAlignment="CENTER" />
+                        <TextField fx:id="tiId" minWidth="200.0" />
+                        <Label fx:id="lblErrorId" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox spacing="5.0">
                     <children>
-                        <Label alignment="TOP_CENTER" text="DNI *" textAlignment="CENTER"/>
-                        <TextField fx:id="tiDni" minWidth="200.0"/>
+                        <Label alignment="TOP_CENTER" text="DNI *" textAlignment="CENTER" />
+                        <TextField fx:id="tiDni" minWidth="200.0" />
+                        <Label fx:id="lblErrorDni" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox spacing="5.0">
                     <children>
-                        <Label alignment="TOP_CENTER" text="Name" textAlignment="CENTER"/>
-                        <TextField fx:id="tiName" minWidth="200.0"/>
+                        <Label alignment="TOP_CENTER" text="Name" textAlignment="CENTER" />
+                        <TextField fx:id="tiName" minWidth="200.0" />
+                        <Label fx:id="lblErrorName" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox spacing="5.0">
                     <children>
-                        <Label alignment="TOP_CENTER" text="Surname" textAlignment="CENTER"/>
-                        <TextField fx:id="tiSurname" minWidth="200.0"/>
+                        <Label alignment="TOP_CENTER" text="Surname" textAlignment="CENTER" />
+                        <TextField fx:id="tiSurname" minWidth="200.0" />
+                        <Label fx:id="lblErrorSurname" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox spacing="5.0">
                     <children>
-                        <Label alignment="TOP_CENTER" text="Password *" textAlignment="CENTER"/>
-                        <PasswordField fx:id="tiPassword" minWidth="200.0"/>
+                        <Label alignment="TOP_CENTER" text="Password *" textAlignment="CENTER" />
+                        <PasswordField fx:id="tiPassword" minWidth="200.0" />
+                        <Label fx:id="lblErrorPassword" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox spacing="5.0">
                     <children>
-                        <Label alignment="TOP_CENTER" text="Speciality *" textAlignment="CENTER"/>
-                        <TextField fx:id="tiSpeciality" minWidth="200.0"/>
+                        <Label alignment="TOP_CENTER" text="Speciality *" textAlignment="CENTER" />
+                        <TextField fx:id="tiSpeciality" minWidth="200.0" />
+                        <Label fx:id="lblErrorSpeciality" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox spacing="5.0">
                     <children>
-                        <Label alignment="TOP_CENTER" text="Email" textAlignment="CENTER"/>
-                        <TextField fx:id="tiEmail" minWidth="200.0"/>
+                        <Label alignment="TOP_CENTER" text="Email" textAlignment="CENTER" />
+                        <TextField fx:id="tiEmail" minWidth="200.0" />
+                        <Label fx:id="lblErrorEmail" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
             </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
         </VBox>
-        <HBox alignment="CENTER" spacing="10.0">
+        <HBox alignment="CENTER" spacing="10.0" styleClass="container,tertiary">
             <children>
-                <Button fx:id="btnAddEmployee" onAction="#onAddEmployeeBtn" mnemonicParsing="false" text="Add Employee"/>
-                <Button fx:id="btnCancel" onAction="#onCancelBtn" mnemonicParsing="false" text="Cancel"/>
+                <Button fx:id="btnAddEmployee" mnemonicParsing="false" onAction="#onAddEmployeeBtn" styleClass="btn,btn-accept" text="Add Employee" />
+                <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#onCancelBtn" styleClass="btn,btn-danger" text="Cancel" />
             </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
         </HBox>
     </children>
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
 </VBox>

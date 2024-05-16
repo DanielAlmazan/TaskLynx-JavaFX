@@ -12,32 +12,19 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
 
-public class NewPayrollController {
+public class MonthHistoryModalController {
 
     @FXML
     public TableView<Trabajo> tbvCompletedTasks;
     @FXML
-    public Label totalAmount;
-    @FXML
-    public Label tvName;
-    @FXML
-    public Label tvSurname;
-    @FXML
-    public Label tvDNI;
-    @FXML
-    public Label tvEmail;
-    @FXML
-    public Label tvSpeciality;
-    @FXML
     public ChoiceBox<Trabajador> cbTrabajador;
     @FXML
-    public Button btnAddEmployee;
+    public Button btnGenerateHistory;
     @FXML
     public Button btnCancel;
 
@@ -51,46 +38,8 @@ public class NewPayrollController {
         getTrabajadores();
         cbTrabajador.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             trabajadorSeleccionado = newValue;
-            setEmployeeData();
             setEmployeeTasks();
         });
-    }
-
-    public void setEmployeeData() {
-        Trabajador trabajadorSeleccionado = cbTrabajador.getSelectionModel().getSelectedItem();
-
-        tvName.setText(trabajadorSeleccionado.getNombre());
-        tvSurname.setText(trabajadorSeleccionado.getApellidos());
-        tvDNI.setText(trabajadorSeleccionado.getDni());
-        tvEmail.setText(trabajadorSeleccionado.getEmail());
-        tvSpeciality.setText(trabajadorSeleccionado.getEspecialidad());
-    }
-
-    public void setEmployeeTasks() {
-        String url = ServiceUtils.SERVER + "/trabajadores/" + trabajadorSeleccionado.getIdTrabajador() + "/trabajos/completados";
-        ServiceUtils.getResponseAsync(url, null, "GET")
-                .thenApply(json -> gson.fromJson(json, TrabajoListResponse.class))
-                .thenAccept(response -> {
-                    Platform.runLater(() -> {
-                        if (response.getJobs().isEmpty()) {
-                            tbvCompletedTasks.setDisable(true);
-                        } else {
-                            tbvCompletedTasks.getItems().setAll(response.getJobs());
-                            totalAmount.setText("Total salary: " + response.getJobs().stream().mapToDouble(Trabajo::getRemuneration).sum() + "€");
-                        }
-                    });
-                })
-                .exceptionally(ex -> {
-                    System.out.println("ERROR: " + ex.getMessage());
-                    return null;
-                });
-    }
-
-    public void onGeneratePayrollBtn() {
-    }
-
-    public void onCancelBtn() {
-        ((Stage) btnCancel.getScene().getWindow()).close();
     }
 
     private void getTrabajadores() {
@@ -110,5 +59,38 @@ public class NewPayrollController {
                     return null;
                 });
     }
+
+    public void setEmployeeTasks() {
+        String url = ServiceUtils.SERVER + "/trabajadores/" + trabajadorSeleccionado.getIdTrabajador() + "/trabajos/completados";
+        LocalDate startMonth = LocalDate.now().withDayOfMonth(1);
+        LocalDate endMonth = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
+        url += "?fechaIni=" + startMonth + "&fechaFin=" + endMonth;
+
+        // /api/trabajadores/T800/trabajos/completados?fechaIni=1984-10-21&fechaFin=1984-10-22
+
+        ServiceUtils.getResponseAsync(url, null, "GET")
+                .thenApply(json -> gson.fromJson(json, TrabajoListResponse.class))
+                .thenAccept(response -> {
+                    Platform.runLater(() -> {
+                        if (response.getJobs().isEmpty()) {
+                            tbvCompletedTasks.setDisable(true);
+                        } else {
+                            tbvCompletedTasks.getItems().setAll(response.getJobs());
+                        }
+                    });
+                })
+                .exceptionally(ex -> {
+                    System.out.println("ERROR: " + ex.getMessage());
+                    return null;
+                });
+    }
+
+    public void onGenerateHistoryBtn() {
+    }
+
+    public void onCancelBtn() {
+        ((Stage) btnCancel.getScene().getWindow()).close();
+    }
+
 
 }

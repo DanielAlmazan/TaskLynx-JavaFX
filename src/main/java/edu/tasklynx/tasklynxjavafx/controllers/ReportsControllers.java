@@ -24,6 +24,10 @@ import java.util.Objects;
 
 public class ReportsControllers {
     @FXML
+    public Label lblEndingDate;
+    @FXML
+    public Label lblTimeSpent;
+    @FXML
     private TableView<Trabajo> tbvTasks;
     @FXML
     private VBox detailContainer;
@@ -96,9 +100,11 @@ public class ReportsControllers {
                 detailContainer.getChildren().add(blockDetail);
             }
 
-            lblDetail.setText(trabajo.getCategoria() + " - Detail");
+            lblDetail.setText(trabajo.getCodTrabajo() + " - Detail");
             lblDescription.setText(trabajo.getDescripcion());
             lblStartingDate.setText(trabajo.getFecIni().toString());
+            lblEndingDate.setText(trabajo.getFecFin().toString());
+            lblTimeSpent.setText((trabajo.getTiempo() + " hours"));
             lblResponsible.setText(trabajo.getNombreTrabajador());
 
         } else {
@@ -115,8 +121,18 @@ public class ReportsControllers {
     }
 
     public void onEmployeesWithoutTasksBtn(ActionEvent actionEvent) {}
-    public void onEmployeesHistoryBtn(ActionEvent actionEvent) {}
+
+    public void onEmployeesHistoryBtn(ActionEvent actionEvent) {
+        FXMLLoader view = new FXMLLoader(
+                Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/monthHistoryModal.fxml")));
+        Utils.showModal(view, actionEvent).showAndWait();
+    }
+
     public void onGeneralReportBtn(ActionEvent actionEvent) {}
-    public void onPaymentsForDateBtn(ActionEvent actionEvent) {}
+    public void onPaymentsForDateBtn(ActionEvent actionEvent) {
+        FXMLLoader view = new FXMLLoader(
+                Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/paymentsDateModal.fxml")));
+        Utils.showModal(view, actionEvent).showAndWait();
+    }
 
 }

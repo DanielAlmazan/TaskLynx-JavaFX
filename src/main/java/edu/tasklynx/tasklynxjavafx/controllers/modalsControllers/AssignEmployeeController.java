@@ -66,6 +66,7 @@ public class AssignEmployeeController implements Initializable {
 
     @FXML
     public void closeModal() {
+        TasksController.employeeAssigned = false;
         ((Stage) btnConfirm.getScene().getWindow()).close();
     }
 
@@ -75,8 +76,9 @@ public class AssignEmployeeController implements Initializable {
             trabajo.setId_trabajador(trabajadorSeleccionado);
 
             TasksController.trabajosToConfirm.add(trabajo);
+            TasksController.employeeAssigned = true;
 
-            closeModal();
+            ((Stage) btnConfirm.getScene().getWindow()).close();
             /*String data = gson.toJson(trabajo);
 
             String url = ServiceUtils.SERVER + "/trabajos/" + trabajo.getCodTrabajo();

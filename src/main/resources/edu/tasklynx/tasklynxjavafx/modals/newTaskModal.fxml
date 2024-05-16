@@ -22,21 +22,21 @@
                     <children>
                         <Label alignment="TOP_CENTER" text="Task code *" textAlignment="CENTER" />
                         <TextField fx:id="tiCodTrabajo" />
-                        <Label fx:id="lblErrCodTrabajo" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
+                        <Label styleClass="lblError" fx:id="lblErrCodTrabajo" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox minWidth="300.0" spacing="5.0">
                     <children>
                         <Label alignment="TOP_CENTER" text="Category *" textAlignment="CENTER" />
                         <TextField fx:id="tiCategoria" />
-                        <Label fx:id="lblErrCategoria" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
+                        <Label styleClass="lblError" fx:id="lblErrCategoria" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox minWidth="300.0" spacing="5.0">
                     <children>
                         <Label alignment="TOP_CENTER" text="Description *" textAlignment="CENTER" />
                         <TextField fx:id="tiDescripcion" />
-                        <Label fx:id="lblErrDescripcion" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
+                        <Label styleClass="lblError" fx:id="lblErrDescripcion" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox minWidth="300.0" spacing="5.0">
@@ -49,14 +49,14 @@
                     <children>
                         <Label alignment="TOP_CENTER" text="Priority *" textAlignment="CENTER" />
                         <ChoiceBox fx:id="cbPrioridad" minWidth="300.0" />
-                        <Label fx:id="lblErrPrioridad" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
+                        <Label styleClass="lblError" fx:id="lblErrPrioridad" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox minWidth="300.0" spacing="5.0">
                     <children>
                         <Label alignment="TOP_CENTER" text="Employee assigned" textAlignment="CENTER" />
                         <ChoiceBox fx:id="cbIdTrabajador" minWidth="300.0" />
-                        <Label fx:id="lblErrIdTrabajador" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
+                        <Label styleClass="lblError" fx:id="lblErrIdTrabajador" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
             </children>

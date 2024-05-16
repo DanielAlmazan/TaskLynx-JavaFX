@@ -21,7 +21,7 @@ public class ServiceUtils {
 
     // Get charset encoding
     public static String getCharset(String contentType) {
-        for (String param: contentType.replace(" ", "").split(";", 0)) {
+        for (String param : contentType.replace(" ", "").split(";", 0)) {
             if (param.startsWith("charset=")) {
                 return param.split("=", 2)[1];
             }
@@ -29,7 +29,7 @@ public class ServiceUtils {
         return null;
     }
 
-    public static String getResponse (String url, String data, String method) {
+    public static String getResponse(String url, String data, String method) {
         BufferedReader bufInput = null;
         StringJoiner response = new StringJoiner("\n");
         try {
@@ -65,8 +65,14 @@ public class ServiceUtils {
 
             String charset = getCharset(connection.getHeaderField("Content-Type"));
 
+            InputStream in;
+            if (connection.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST) {
+                in = connection.getInputStream();
+            } else {
+                in = connection.getErrorStream();
+            }
+
             if (charset != null) {
-                InputStream in = connection.getInputStream();
                 if ("gzip".equals(connection.getContentEncoding())) {
                     in = new GZIPInputStream(in);
                 }

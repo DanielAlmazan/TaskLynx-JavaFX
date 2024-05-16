@@ -97,15 +97,6 @@ public class newEmployeeModalController {
         return null;
     }
 
-    private String checkPassword(String password) {
-        if (password == null || password.isEmpty()) {
-            return "The password is required.";
-        } else if (password.length() > 50) {
-            return "The password must be less than 50 characters.";
-        }
-        return null;
-    }
-
     private String checkEmail(String email) {
         if (email.length() > 150) {
             return "The email must be less than 150 characters.";
@@ -120,7 +111,6 @@ public class newEmployeeModalController {
         lblErrorName.setText(checkName(tiName.getText()));
         lblErrorSurname.setText(checkSurname(tiSurname.getText()));
         lblErrorSpeciality.setText(checkSpeciality(tiSpeciality.getText()));
-        lblErrorPassword.setText(checkPassword(tiPassword.getText()));
         lblErrorEmail.setText(checkEmail(tiEmail.getText()));
 
         // Show the error labels if there is an error
@@ -129,7 +119,6 @@ public class newEmployeeModalController {
         lblErrorName.setVisible(lblErrorName.getText() != null);
         lblErrorSurname.setVisible(lblErrorSurname.getText() != null);
         lblErrorSpeciality.setVisible(lblErrorSpeciality.getText() != null);
-        lblErrorPassword.setVisible(lblErrorPassword.getText() != null);
         lblErrorEmail.setVisible(lblErrorEmail.getText() != null);
 
         // Return if there is an error
@@ -192,7 +181,7 @@ public class newEmployeeModalController {
                         tiDni.getText(),
                         tiName.getText(),
                         tiSurname.getText(),
-                        tiPassword.getText(),
+                        tiDni.getText(),
                         tiEmail.getText(),
                         tiSpeciality.getText()
                 );

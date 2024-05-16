@@ -93,3 +93,7 @@ ChoiceBox *, DatePicker *, TextField *, PasswordField * {
 .date-picker-popup .spinner .button .right-arrow {
     -fx-background-color: white;
 }
+
+.label.lblError {
+    -fx-text-fill: #ff7070;
+}

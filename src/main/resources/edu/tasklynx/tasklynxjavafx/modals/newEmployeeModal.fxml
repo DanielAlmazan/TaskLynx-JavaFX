@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -23,49 +22,42 @@
                     <children>
                         <Label alignment="TOP_CENTER" text="ID *" textAlignment="CENTER" />
                         <TextField fx:id="tiId" minWidth="200.0" />
-                        <Label fx:id="lblErrorId" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
+                        <Label  styleClass="lblError" fx:id="lblErrorId" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox spacing="5.0">
                     <children>
                         <Label alignment="TOP_CENTER" text="DNI *" textAlignment="CENTER" />
                         <TextField fx:id="tiDni" minWidth="200.0" />
-                        <Label fx:id="lblErrorDni" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
+                        <Label styleClass="lblError" fx:id="lblErrorDni" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox spacing="5.0">
                     <children>
                         <Label alignment="TOP_CENTER" text="Name" textAlignment="CENTER" />
                         <TextField fx:id="tiName" minWidth="200.0" />
-                        <Label fx:id="lblErrorName" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
+                        <Label styleClass="lblError" fx:id="lblErrorName" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox spacing="5.0">
                     <children>
                         <Label alignment="TOP_CENTER" text="Surname" textAlignment="CENTER" />
                         <TextField fx:id="tiSurname" minWidth="200.0" />
-                        <Label fx:id="lblErrorSurname" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
-                    </children>
-                </VBox>
-                <VBox spacing="5.0">
-                    <children>
-                        <Label alignment="TOP_CENTER" text="Password *" textAlignment="CENTER" />
-                        <PasswordField fx:id="tiPassword" minWidth="200.0" />
-                        <Label fx:id="lblErrorPassword" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
+                        <Label styleClass="lblError" fx:id="lblErrorSurname" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox spacing="5.0">
                     <children>
                         <Label alignment="TOP_CENTER" text="Speciality *" textAlignment="CENTER" />
                         <TextField fx:id="tiSpeciality" minWidth="200.0" />
-                        <Label fx:id="lblErrorSpeciality" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
+                        <Label styleClass="lblError" fx:id="lblErrorSpeciality" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
                 <VBox spacing="5.0">
                     <children>
                         <Label alignment="TOP_CENTER" text="Email" textAlignment="CENTER" />
                         <TextField fx:id="tiEmail" minWidth="200.0" />
-                        <Label fx:id="lblErrorEmail" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
+                        <Label styleClass="lblError" fx:id="lblErrorEmail" visible="false" alignment="TOP_CENTER" textAlignment="CENTER" />
                     </children>
                 </VBox>
             </children>

@@ -16,6 +16,7 @@ public class Trabajo {
     private Trabajador idTrabajador;
     private String nombreTrabajador;
     private boolean previsualizar = false;
+    private double remuneration;
 
     public Trabajo(String codTrabajo, String categoria, String descripcion, LocalDate fecIni, LocalDate fecFin, Float tiempo, Integer prioridad, Trabajador idTrabajador) {
         this.codTrabajo = codTrabajo;
@@ -98,6 +99,10 @@ public class Trabajo {
 
     public void setPrevisualizar(boolean previsualizar) {
         this.previsualizar = previsualizar;
+    }
+
+    public double getRemuneration() {
+        return remuneration = tiempo * 10;
     }
 
     @Override

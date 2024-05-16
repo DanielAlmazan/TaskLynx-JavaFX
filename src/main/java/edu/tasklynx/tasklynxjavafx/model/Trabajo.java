@@ -15,6 +15,7 @@ public class Trabajo {
     private int prioridad;
     private Trabajador idTrabajador;
     private String nombreTrabajador;
+    private double remuneration;
 
     public Trabajo(String codTrabajo, String categoria, String descripcion, LocalDate fecIni, LocalDate fecFin, Float tiempo, Integer prioridad, Trabajador idTrabajador) {
         this.codTrabajo = codTrabajo;
@@ -89,6 +90,10 @@ public class Trabajo {
 
     public String getNombreTrabajador() {
         return idTrabajador == null ? "" : idTrabajador.toString();
+    }
+
+    public double getRemuneration() {
+        return remuneration = tiempo * 10;
     }
 
     @Override

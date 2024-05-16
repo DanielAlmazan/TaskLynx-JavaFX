@@ -2,9 +2,9 @@ package edu.tasklynx.tasklynxjavafx.controllers.modalsControllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonIOException;
 import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
+import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorListResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoResponse;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
@@ -55,10 +55,14 @@ public class NewTaskModalController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cbPrioridad.getItems().addAll(1, 2, 3, 4);
         dpFecIni.setValue(LocalDate.now());
+        getEmployees();
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
     }
 
     public void onCreateTaskBtn() {
-        if (!checkFields()) {
+        if (!fieldsAreValid()) {
             try {
                 Trabajo newTask = getTaskFromModal();
                 submitTask(newTask);
@@ -66,10 +70,11 @@ public class NewTaskModalController implements Initializable {
                 System.out.println("Error: " + e.getMessage());
             }
         } else {
-            System.out.println("Error: Some fields are not correct");
+            System.out.println("Some fields are not correct");
         }
     }
 
+    // region Validation methods
     public void onCancelBtn() {
         ((Stage) btnCancel.getScene().getWindow()).close();
     }
@@ -87,37 +92,46 @@ public class NewTaskModalController implements Initializable {
         );
     }
 
-    private boolean checkFields() {
+    private boolean fieldsAreValid() {
         lblErrCodTrabajo.setText(checkCodTrabajo(tiCodTrabajo.getText()));
         lblErrCategoria.setText(checkCategoria(tiCategoria.getText()));
         lblErrDescripcion.setText(checkDescripcion(tiDescripcion.getText()));
         lblErrPrioridad.setText(checkPrioridad(cbPrioridad.getValue()));
-        lblErrIdTrabajador.setText(checkIdTrabajador(cbIdTrabajador.getValue()));
 
         lblErrCodTrabajo.setVisible(lblErrCodTrabajo.getText() != null);
         lblErrCategoria.setVisible(lblErrCategoria.getText() != null);
         lblErrDescripcion.setVisible(lblErrDescripcion.getText() != null);
         lblErrPrioridad.setVisible(lblErrPrioridad.getText() != null);
-        lblErrIdTrabajador.setVisible(lblErrIdTrabajador.getText() != null);
 
         return lblErrCodTrabajo.isVisible()
-                && lblErrCategoria.isVisible()
-                && lblErrDescripcion.isVisible()
-                && lblErrPrioridad.isVisible()
-                && lblErrIdTrabajador.isVisible();
+                || lblErrCategoria.isVisible()
+                || lblErrDescripcion.isVisible()
+                || lblErrPrioridad.isVisible();
     }
 
     private String checkCodTrabajo(String codTrabajo) {
         String error = null;
+
         if (codTrabajo == null || codTrabajo.isEmpty()) {
             error = "El código de trabajo es obligatorio";
         } else if (codTrabajo.length() > 5) {
             error = "El código de trabajo no puede tener más de 5 caracteres";
-        } else /* if (SomeController.findById(codTrabajo) != null */ {
-            // error = "El código de trabajo ya existe";
+        } else if (codTrabajoExists(codTrabajo)) {
+            error = "El código de trabajo ya existe";
         }
 
         return error;
+    }
+
+    private boolean codTrabajoExists(String codTrabajo) {
+        String url = ServiceUtils.SERVER + "/trabajos/" + codTrabajo;
+
+        return ServiceUtils.getResponseAsync(url, null, "GET")
+                .thenApply(json -> gson.fromJson(json, TrabajoResponse.class))
+                .thenApply(response -> {
+                    return response != null && response.getJob() != null;
+                })
+                .join();
     }
 
     private String checkCategoria(String categoria) {
@@ -126,6 +140,8 @@ public class NewTaskModalController implements Initializable {
             error = "La categoría es obligatoria";
         } else if (categoria.length() > 50) {
             error = "La categoría no puede tener más de 50 caracteres";
+        } else if (cbIdTrabajador.getValue() != null && !cbIdTrabajador.getValue().getEspecialidad().equals(categoria)) {
+            error = "La categoría debe ser la misma que la del trabajador";
         }
 
         return error;
@@ -152,22 +168,10 @@ public class NewTaskModalController implements Initializable {
 
         return error;
     }
-
-    private String checkIdTrabajador(Trabajador idTrabajador) {
-        String error = "";
-        // TODO: Implement call to /trabajadores/{id} endpoint for checking if it exists
-        if (idTrabajador != null /* && SomeController.findById(idTrabajador) */) {
-            error = "El trabajador no existe";
-        }
-
-        return error;
-    }
+    // endregion
 
     private void submitTask(Trabajo newTask) {
         String url = ServiceUtils.SERVER + "/trabajos";
-        gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                .create();
 
         String data = gson.toJson(newTask);
 
@@ -179,8 +183,8 @@ public class NewTaskModalController implements Initializable {
                             // Show a success alert
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                             alert.setTitle("Information");
-                            alert.setHeaderText("Employee added.");
-                            alert.setContentText("The employee was added successfully.");
+                            alert.setHeaderText("New task added.");
+                            alert.setContentText("The task was added successfully.");
                             alert.showAndWait();
                             onCancelBtn();
                         });
@@ -189,7 +193,30 @@ public class NewTaskModalController implements Initializable {
                             // Show an error alert
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setTitle("Error");
-                            alert.setHeaderText("Error adding the employee");
+                            alert.setHeaderText("Error adding the task");
+                            alert.setContentText(response.getErrorMessage());
+                            alert.showAndWait();
+                        });
+                    }
+                });
+    }
+
+    private void getEmployees() {
+        String url = ServiceUtils.SERVER + "/trabajadores";
+
+        ServiceUtils.getResponseAsync(url, null, "GET")
+                .thenApply(json -> gson.fromJson(json, TrabajadorListResponse.class))
+                .thenAccept(response -> {
+                    if (!response.isError()) {
+                        Platform.runLater(() -> {
+                            cbIdTrabajador.getItems().addAll(response.getEmployees());
+                        });
+                    } else {
+                        Platform.runLater(() -> {
+                            // Show an error alert
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Error");
+                            alert.setHeaderText("Error getting the employees");
                             alert.setContentText(response.getErrorMessage());
                             alert.showAndWait();
                         });

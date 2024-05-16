@@ -41,7 +41,7 @@
                               <PropertyValueFactory property="fecIni" />
                            </cellValueFactory>
                         </TableColumn>
-                        <TableColumn id="last-column" prefWidth="200.0" text="Responsable">
+                        <TableColumn id="last-column" prefWidth="200.0" text="Responsable" fx:id="pruebasion">
                            <cellValueFactory>
                               <PropertyValueFactory property="nombreTrabajador" />
                            </cellValueFactory>

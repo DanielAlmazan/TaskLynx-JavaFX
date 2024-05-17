@@ -66,6 +66,7 @@ public class ReportsControllers {
 
         toggleDetailView();
         loadCompletedasks();
+        System.out.println("Tareas completadas: " + tbvTasks.getItems());
     }
 
     private void loadCompletedasks() {
@@ -136,6 +137,25 @@ public class ReportsControllers {
         return employeesWithoutTasks;
     }
 
+    public List<Trabajador> getEmployees() {
+        List<Trabajador> employees = new ArrayList<>();
+        String url = ServiceUtils.SERVER + "/trabajadores";
+        ServiceUtils.getResponseAsync(url, null, "GET")
+                .thenApply(json -> gson.fromJson(json, TrabajadorListResponse.class))
+                .thenAccept(response -> {
+                    if (!response.isError()) {
+                        employees.addAll(response.getEmployees());
+                    } else {
+                        System.out.println("ERROR OBTENIENDO LISTA 1: " + response.getErrorMessage());
+                    }
+                })
+                .exceptionally(ex -> {
+                    System.out.println("ERROR OBTENIENDO LISTA 2: " + ex.getMessage());
+                    return null;
+                });
+        return employees;
+    }
+
 
     // Generating reports buttons
     public void onEmployeesWithoutTasksBtn(ActionEvent actionEvent) {
@@ -155,7 +175,16 @@ public class ReportsControllers {
         Utils.showModal(view, actionEvent).showAndWait();
     }
 
-    public void onGeneralReportBtn(ActionEvent actionEvent) {}
+    public void onGeneralReportBtn(ActionEvent actionEvent) {
+        List<Trabajador> employees = getEmployees();
+
+        try {
+            PdfCreator.generateGeneralReport(employees);
+            Utils.showAlert(Alert.AlertType.INFORMATION, "Report generated", "Report generated", "The report has been created successfully").showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void onPaymentsForDateBtn(ActionEvent actionEvent) {
         FXMLLoader view = new FXMLLoader(

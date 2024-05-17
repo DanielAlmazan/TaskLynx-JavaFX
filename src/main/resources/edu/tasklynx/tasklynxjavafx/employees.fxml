@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="766.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.tasklynx.tasklynxjavafx.controllers.EmployeesController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="766.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.tasklynx.tasklynxjavafx.controllers.EmployeesController">
     <children>
         <HBox prefHeight="766.0" prefWidth="1300.0" spacing="10.0">
             <children>
@@ -85,7 +85,7 @@
                                                         <Font size="18.0" />
                                                     </font>
                                                 </Button>
-                                                <Button id="btn-delete-employee" mnemonicParsing="false" styleClass="btn, btn-danger" text="Delete employee">
+                                                <Button id="btn-delete-employee" mnemonicParsing="false" onAction="#deleteEmployee" styleClass="btn, btn-danger" text="Delete employee">
                                                     <font>
                                                         <Font size="18.0" />
                                                     </font>
@@ -168,6 +168,9 @@
                                                     </children>
                                                 </HBox>
                                             </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
                                         </VBox>
                                     </children>
                                 </VBox>

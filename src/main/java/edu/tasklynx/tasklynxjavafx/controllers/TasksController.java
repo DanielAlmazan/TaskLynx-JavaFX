@@ -6,6 +6,7 @@ import edu.tasklynx.tasklynxjavafx.TaskLynxController;
 import edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.AssignEmployeeController;
 import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
+import edu.tasklynx.tasklynxjavafx.model.responses.BaseResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
 import edu.tasklynx.tasklynxjavafx.utils.EmailSender;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
@@ -26,6 +27,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import jdk.jshell.execution.Util;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -105,6 +107,16 @@ public class TasksController implements Initializable {
     }
 
     @FXML
+    public void onSelectedRow(MouseEvent mouseEvent) {
+        toggleDetailView();
+    }
+
+    @FXML
+    public void onKeyReleased(KeyEvent keyEvent) {
+        toggleDetailView();
+    }
+
+    @FXML
     public void assignEmployee(ActionEvent actionEvent) {
         Trabajo trabajo = tbvTasks.getSelectionModel().getSelectedItem();
 
@@ -174,6 +186,50 @@ public class TasksController implements Initializable {
         });
     }
 
+    @FXML
+    public void deleteTask(ActionEvent actionEvent) {
+        Alert alert = Utils.showAlert(
+                Alert.AlertType.CONFIRMATION,
+                "Caution",
+                "Are you sure to delete this task?",
+                "This action can't be undone."
+        );
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if(result.isPresent() && result.get() == ButtonType.OK) {
+            Trabajo trabajo = tbvTasks.getSelectionModel().getSelectedItem();
+
+            if(trabajo != null) {
+                String url = ServiceUtils.SERVER + "/trabajos/" + trabajo.getCodTrabajo();
+                ServiceUtils.getResponseAsync(url, null, "DELETE")
+                        .thenApply(json -> gson.fromJson(json, BaseResponse.class))
+                        .thenAccept(response -> Platform.runLater(() -> {
+                            if (!response.isError()) {
+                                loadTasks();
+                                Utils.showAlert(
+                                        Alert.AlertType.INFORMATION,
+                                        "Success",
+                                        "Task deleted sucessfully",
+                                        "The task hass been removed from the application"
+                                ).show();
+                            } else {
+                                Utils.showAlert(
+                                        Alert.AlertType.ERROR,
+                                        "Error",
+                                        "Error deleting the task",
+                                        response.getErrorMessage()
+                                ).show();
+                            }
+                        }))
+                        .exceptionally(ex -> {
+                            System.out.println("ERROR OBTENIENDO LISTA 2: " + ex.getMessage());
+                            return null;
+                        });
+            }
+        }
+    }
+
     private void previewEmployee() {
         if(!trabajosToConfirm.isEmpty() && employeeAssigned) {
             tbvTasks.getSelectionModel().getSelectedItem().setId_trabajador(
@@ -215,15 +271,7 @@ public class TasksController implements Initializable {
         btnAdd.setGraphic(new ImageView(iconAdd));
     }
 
-    public void onSelectedRow(MouseEvent mouseEvent) {
-        toggleDetailView();
-    }
-
-    public void onKeyReleased(KeyEvent keyEvent) {
-        toggleDetailView();
-    }
-
-    public void toggleDetailView() {
+    private void toggleDetailView() {
         Trabajo trabajo = tbvTasks.getSelectionModel().getSelectedItem();
 
         if (trabajo != null) {

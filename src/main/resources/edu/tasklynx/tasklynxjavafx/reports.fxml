@@ -29,7 +29,7 @@
                         </HBox>
                         <TableView fx:id="tbvTasks" onKeyReleased="#onKeyReleased" onMouseClicked="#onSelectedRow" prefWidth="751.0" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn id="column-id" prefWidth="200.0" text="Id">
+                                <TableColumn id="column-id" prefWidth="200.0" text="ID">
                                     <cellValueFactory>
                                         <PropertyValueFactory property="codTrabajo" />
                                     </cellValueFactory>

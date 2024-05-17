@@ -113,7 +113,7 @@ public class NewPayrollController {
         LocalDate endingDate = dpFecFin.getValue();
 
         if (startingDate == null || endingDate == null) {
-            System.out.println("Please select a valid date range.");
+            Utils.showAlert(Alert.AlertType.ERROR, "Invalid date range", "Invalid date range", "Please select a valid date range.").showAndWait();
             return;
         }
 

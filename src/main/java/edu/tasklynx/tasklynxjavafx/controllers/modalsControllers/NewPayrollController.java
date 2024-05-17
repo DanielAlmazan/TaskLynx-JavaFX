@@ -7,15 +7,13 @@ import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorListResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
-import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
-import edu.tasklynx.tasklynxjavafx.utils.PdfCreator;
-import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
-import edu.tasklynx.tasklynxjavafx.utils.Utils;
+import edu.tasklynx.tasklynxjavafx.utils.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -134,8 +132,18 @@ public class NewPayrollController {
 
                         String dest = "reports/payroll/payroll_" + trabajadorSeleccionado.getNombre() + "-" + trabajadorSeleccionado.getApellidos()
                                 + "_" + startingDate + "_" + endingDate + ".pdf";
-                        PdfCreator.createPayrollPDF(payroll, dest);
+                        
+                        File payrollFile = PdfCreator.createPayrollPDF(payroll, dest);
                         Utils.showAlert(Alert.AlertType.INFORMATION, "Payroll generated", "Payroll generated", "Payroll generated successfully.").showAndWait();
+                        
+                        EmailSender emailSender = new EmailSender();
+
+                        try {
+                            emailSender.sendPayrollEmail(trabajadorSeleccionado, payrollFile);
+                        } catch (Exception e) {
+                            Utils.showAlert(Alert.AlertType.ERROR, "Error", "Error", "Error sending payroll email.").showAndWait();
+                        }
+                        
                         ((Stage) btnCancel.getScene().getWindow()).close();
                     });
                 });

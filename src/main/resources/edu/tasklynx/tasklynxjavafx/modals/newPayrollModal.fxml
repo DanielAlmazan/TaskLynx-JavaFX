@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -130,6 +131,18 @@
                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
             </padding>
         </VBox>
+        <HBox alignment="CENTER" prefWidth="233.0" spacing="40.0">
+            <children>
+                <Label text="STARTING DATE" />
+                <Label text="ENDING DATE" />
+            </children>
+        </HBox>
+        <HBox alignment="CENTER" prefWidth="233.0" spacing="20.0">
+            <children>
+                <DatePicker fx:id="dpFecIni" />
+                <DatePicker fx:id="dpFecFin" />
+            </children>
+        </HBox>
         <HBox alignment="CENTER" spacing="10.0" styleClass="container,tertiary">
             <children>
                 <Button fx:id="btnAddEmployee" mnemonicParsing="false" onAction="#onGeneratePayrollBtn" styleClass="btn,btn-accept" text="GENERATE PAYROLL" />

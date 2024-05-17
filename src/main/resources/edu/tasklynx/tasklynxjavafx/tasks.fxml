@@ -46,7 +46,7 @@
                               <PropertyValueFactory property="fecIni" />
                            </cellValueFactory>
                         </TableColumn>
-                        <TableColumn id="last-column" prefWidth="200.0" text="Responsable" fx:id="pruebasion">
+                        <TableColumn id="last-column" fx:id="pruebasion" prefWidth="200.0" text="Responsable">
                            <cellValueFactory>
                               <PropertyValueFactory property="nombreTrabajador" />
                            </cellValueFactory>
@@ -86,7 +86,7 @@
                                           <Font size="18.0" />
                                        </font>
                                     </Button>
-                                    <Button id="btn-delete-task" mnemonicParsing="false" styleClass="btn, btn-danger" text="Delete task">
+                                    <Button id="btn-delete-task" mnemonicParsing="false" onAction="#deleteTask" styleClass="btn, btn-danger" text="Delete task">
                                        <font>
                                           <Font size="18.0" />
                                        </font>

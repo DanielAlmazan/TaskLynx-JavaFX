@@ -22,6 +22,7 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -34,10 +35,12 @@ public class EmailSender {
 
     private final Trabajador trabajador;
     private final List<Trabajo> trabajos;
+    private final LocalDate soonerTaskDate;
 
-    public EmailSender(Trabajador trabajador, List<Trabajo> trabajos) {
+    public EmailSender(Trabajador trabajador, List<Trabajo> trabajos, LocalDate soonerTaskDate) {
         this.trabajador = trabajador;
         this.trabajos = trabajos;
+        this.soonerTaskDate = soonerTaskDate;
     }
 
     private Gmail getService() throws IOException {
@@ -49,7 +52,8 @@ public class EmailSender {
 
     public void sendTaskNotificationEmail() throws IOException, MessagingException {
         Gmail service = getService();
-        MimeMessage emailContent = buildTaskNotificationEmail(trabajador, trabajos);
+        System.out.println("Sending email to " + trabajador.getEmail());
+        MimeMessage emailContent = buildTaskNotificationEmail(trabajador, soonerTaskDate);
         sendMessage(service, "me", emailContent);
     }
 
@@ -59,11 +63,11 @@ public class EmailSender {
         sendMessage(service, "me", emailContent);
     }
 
-    private MimeMessage buildTaskNotificationEmail(Trabajador trabajador, List<Trabajo> trabajos) throws MessagingException {
+    private MimeMessage buildTaskNotificationEmail(Trabajador trabajador, LocalDate firstTaskDate) throws MessagingException {
         MimeMultipart mimeMultipart = new MimeMultipart();
 
         MimeBodyPart mainContent = new MimeBodyPart();
-        mainContent.setContent(createMainContent(trabajador, trabajos), "text/html");
+        mainContent.setContent(createMainContent(trabajador, firstTaskDate), "text/html");
 
         MimeBodyPart footer = new MimeBodyPart();
         footer.setContent(footerContent, "text/html");
@@ -71,7 +75,7 @@ public class EmailSender {
         mimeMultipart.addBodyPart(mainContent);
         mimeMultipart.addBodyPart(footer);
 
-        MimeMessage emailContent = createEmail(trabajador.getEmail(), "youremail@example.com", "New tasks upcoming!", "");
+        MimeMessage emailContent = createEmail("almazansellesdaniel@gmail.com", "youremail@example.com", "New tasks upcoming!", "");
         emailContent.setContent(mimeMultipart);
 
         return emailContent;
@@ -142,32 +146,9 @@ public class EmailSender {
                  <p>© 2024 TaskLynx.</p>
              </footer>""";
 
-    private String createMainContent(Trabajador trabajador, List<Trabajo> trabajos) {
-        StringBuilder mainContent = new StringBuilder("<main>" +
-                                                      "<h1>Hello, " + trabajador.getNombre() + "!</h1>" +
-                                                      "<p>Here are your upcoming tasks:</p><ul>");
-
-        for (Trabajo trabajo : trabajos) {
-            String priorityColor;
-            switch (trabajo.getPrioridad()) {
-                case 1 -> priorityColor = "red";
-                case 2 -> priorityColor = "orange";
-                case 3 -> priorityColor = "yellow";
-                default -> priorityColor = "green";
-            }
-            
-            mainContent.append("<li>")
-                    .append("<h2>").append(trabajo.getCodTrabajo()).append("</h2>")
-                    .append("<p>Description: ").append(trabajo.getDescripcion()).append("</p>")
-                    .append("<p style=\"padding: .75em; ")
-                    .append("border-radius: 5px; ")
-                    .append("background-color: ").append(priorityColor).append(";")
-                    .append("font-weight: bold;\">")
-                    .append("Priority: ").append(trabajo.getPrioridad()).append("</p>")
-                    .append("</li>");
-        }
-        mainContent.append("</ul></main>");
-
-        return mainContent.toString();
+    private String createMainContent(Trabajador trabajador, LocalDate firstTaskDate) {
+        return "<h1>Hello, " + trabajador.getNombre() + "!</h1>" +
+               "<p>Your have new upcoming tasks!</p>" +
+               "<p>The first is for " + firstTaskDate + "</p>";
     }
 }

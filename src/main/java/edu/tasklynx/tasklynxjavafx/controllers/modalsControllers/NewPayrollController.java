@@ -134,12 +134,12 @@ public class NewPayrollController {
                                 + "_" + startingDate + "_" + endingDate + ".pdf";
                         
                         File payrollFile = PdfCreator.createPayrollPDF(payroll, dest);
-                        Utils.showAlert(Alert.AlertType.INFORMATION, "Payroll generated", "Payroll generated", "Payroll generated successfully.").showAndWait();
                         
                         EmailSender emailSender = new EmailSender();
 
                         try {
                             emailSender.sendPayrollEmail(trabajadorSeleccionado, payrollFile);
+                            Utils.showAlert(Alert.AlertType.INFORMATION, "Payroll generated", "Payroll generated", "Payroll generated successfully.").show();
                         } catch (Exception e) {
                             Utils.showAlert(Alert.AlertType.ERROR, "Error", "Error", "Error sending payroll email.").showAndWait();
                         }

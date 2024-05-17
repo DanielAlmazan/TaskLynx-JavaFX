@@ -2,6 +2,8 @@ package edu.tasklynx.tasklynxjavafx.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 public class Trabajador {
 
     @SerializedName("idTrabajador")
@@ -80,6 +82,19 @@ public class Trabajador {
 
     public void setEspecialidad(String especialidad) {
         this.especialidad = especialidad;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Trabajador that = (Trabajador) o;
+        return Objects.equals(idTrabajador, that.idTrabajador);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(idTrabajador);
     }
 
     @Override

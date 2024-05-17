@@ -22,6 +22,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -152,7 +153,7 @@ public class ReportsControllers {
     public void onEmployeesPayrollBtn(ActionEvent actionEvent) {
         FXMLLoader view = new FXMLLoader(
                 Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/newPayrollModal.fxml")));
-        Utils.showModal(view, actionEvent).showAndWait();
+        Utils.showModal(view, (Stage) tbvTasks.getScene().getWindow()).showAndWait();
     }
 
     public void onGeneralReportBtn(ActionEvent actionEvent) {}
@@ -160,7 +161,7 @@ public class ReportsControllers {
     public void onPaymentsForDateBtn(ActionEvent actionEvent) {
         FXMLLoader view = new FXMLLoader(
                 Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/paymentsDateModal.fxml")));
-        Utils.showModal(view, actionEvent).showAndWait();
+        Utils.showModal(view, (Stage) tbvTasks.getScene().getWindow()).showAndWait();
     }
 
 }

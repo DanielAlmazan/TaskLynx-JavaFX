@@ -20,6 +20,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.List;
@@ -195,7 +196,7 @@ public class EmployeesController implements Initializable {
     private void modalAddEmployee(ActionEvent actionEvent) {
         FXMLLoader view = new FXMLLoader(
                 Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/newEmployeeModal.fxml")));
-        Utils.showModal(view, actionEvent).showAndWait();
+        Utils.showModal(view, (Stage) tbvEmployees.getScene().getWindow()).showAndWait();
         loadEmployees();
     }
 }

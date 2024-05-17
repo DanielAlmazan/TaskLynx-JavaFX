@@ -20,11 +20,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -114,6 +116,24 @@ public class TasksController implements Initializable {
     @FXML
     public void onSelectedRow(MouseEvent mouseEvent) {
         toggleDetailView();
+
+        if(mouseEvent.getButton().equals(MouseButton.PRIMARY) &&
+                mouseEvent.getClickCount() == 2) {
+            Trabajo trabajoSelected = tbvTasks.getSelectionModel().getSelectedItem();
+
+            if(trabajoSelected != null) {
+                if(trabajoSelected.getIdTrabajador() == null) {
+                    assignEmployee();
+                } else if (trabajoSelected.getPrevisualizar()) {
+                    trabajoSelected.setPrevisualizar(false);
+                    trabajoSelected.setId_trabajador(null);
+                    lblResponsible.setText("");
+
+                    filterPendingTasks(trabajoSelected);
+                    tbvTasks.refresh();
+                }
+            }
+        }
     }
 
     @FXML
@@ -122,13 +142,13 @@ public class TasksController implements Initializable {
     }
 
     @FXML
-    public void assignEmployee(ActionEvent actionEvent) {
+    public void assignEmployee() {
         Trabajo trabajo = tbvTasks.getSelectionModel().getSelectedItem();
 
         if (trabajo != null) {
             FXMLLoader view = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/assign-employee.fxml")));
-            Stage modal = Utils.showModal(view, actionEvent);
+            Stage modal = Utils.showModal(view, (Stage) tbvTasks.getScene().getWindow());
             modal.setOnHidden((e) -> Platform.runLater(() -> {
                 if(taskReassigned != null) {
                     reassignEmployee(taskReassigned);
@@ -146,7 +166,7 @@ public class TasksController implements Initializable {
     public void openNewTaskModal(ActionEvent actionEvent) {
         FXMLLoader view = new FXMLLoader(
                 Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/newTaskModal.fxml")));
-        Utils.showModal(view, actionEvent).showAndWait();
+        Utils.showModal(view, (Stage) tbvTasks.getScene().getWindow()).showAndWait();
         loadTasks();
     }
 
@@ -311,7 +331,17 @@ public class TasksController implements Initializable {
                 .thenApply(json -> gson.fromJson(json, TrabajoListResponse.class))
                 .thenAccept(response -> {
                     if (!response.isError()) {
-                        Platform.runLater(() -> tbvTasks.getItems().setAll(response.getJobs()));
+                        Platform.runLater(() -> {
+                            HashSet<Trabajo> trabajos = new HashSet<>();
+
+                            if(!trabajosToConfirm.isEmpty()) {
+                                trabajos.addAll(trabajosToConfirm);
+                                trabajos.forEach(t -> t.setPrevisualizar(true));
+                            }
+
+                            trabajos.addAll(response.getJobs());
+                            tbvTasks.getItems().setAll(trabajos);
+                        });
                     } else {
                         System.out.println("ERROR OBTENIENDO LISTA 1: " + response.getErrorMessage());
                     }
@@ -352,16 +382,15 @@ public class TasksController implements Initializable {
                 }
             });
 
-            Platform.runLater(() -> tbvTasksToConfirm.getItems().setAll(trabajosToConfirm));
+            tbvTasksToConfirm.getItems().setAll(trabajosToConfirm);
         }
     }
 
     private void filterPendingTasks(Trabajo trabajoRemoved) {
         trabajosToConfirm = trabajosToConfirm.stream()
                 .filter(t -> !t.getCodTrabajo().equals(trabajoRemoved.getCodTrabajo()))
-                .toList();
+                .collect(Collectors.toList());
 
-        Platform.runLater(this::toggleAssigments);
-
+        toggleAssigments();
     }
 }

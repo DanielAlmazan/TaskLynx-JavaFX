@@ -3,6 +3,7 @@ package edu.tasklynx.tasklynxjavafx.model;
 import com.google.gson.annotations.SerializedName;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Trabajo {
     @SerializedName("codTrabajo")
@@ -117,5 +118,18 @@ public class Trabajo {
                 ", prioridad='" + prioridad + '\'' +
                 ", id_trabajador='" + idTrabajador + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Trabajo trabajo = (Trabajo) o;
+        return Objects.equals(codTrabajo, trabajo.codTrabajo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(codTrabajo);
     }
 }

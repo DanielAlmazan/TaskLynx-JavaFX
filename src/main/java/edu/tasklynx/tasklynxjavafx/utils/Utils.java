@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.Normalizer;
 import java.util.regex.Pattern;
@@ -19,7 +20,7 @@ public class Utils {
         return pattern.matcher(normalized).replaceAll("");
     }
 
-    public static Stage showModal(FXMLLoader view, ActionEvent actionEvent) {
+    public static Stage showModal(FXMLLoader view, Stage stage) {
         Scene mainScene = null;
         Stage secondaryStage = new Stage();
 
@@ -30,7 +31,6 @@ public class Utils {
         }
 
         if (mainScene != null) {
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             secondaryStage = new Stage();
             secondaryStage.setScene(mainScene);
             secondaryStage.initModality(Modality.WINDOW_MODAL);

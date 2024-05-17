@@ -2,9 +2,12 @@ package edu.tasklynx.tasklynxjavafx.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
+import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorListResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
+import edu.tasklynx.tasklynxjavafx.utils.PdfCreator;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 import edu.tasklynx.tasklynxjavafx.utils.Utils;
 import javafx.application.Platform;
@@ -12,6 +15,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
@@ -20,6 +24,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ReportsControllers {
@@ -43,8 +49,6 @@ public class ReportsControllers {
     private Label lblResponsible;
     @FXML
     public Button employeesWithoutTasksBtn;
-    @FXML
-    public Button employeesHistoryBtn;
     @FXML
     public Button employeesPayrollBtn;
     @FXML
@@ -82,7 +86,6 @@ public class ReportsControllers {
                 });
     }
 
-
     public void onSelectedRow(MouseEvent mouseEvent) {
         toggleDetailView();
     }
@@ -114,21 +117,46 @@ public class ReportsControllers {
         }
     }
 
+    public List<Trabajador> getEmployeesWithoutTasks() {
+        List<Trabajador> employeesWithoutTasks = new ArrayList<>();
+        String url = ServiceUtils.SERVER + "/trabajadores/sintrabajospendientes";
+        ServiceUtils.getResponseAsync(url, null, "GET")
+                .thenApply(json -> gson.fromJson(json, TrabajadorListResponse.class))
+                .thenAccept(response -> {
+                    if (!response.isError()) {
+                        employeesWithoutTasks.addAll(response.getEmployees());
+                    } else {
+                        System.out.println("ERROR OBTENIENDO LISTA 1: " + response.getErrorMessage());
+                    }
+                })
+                .exceptionally(ex -> {
+                    System.out.println("ERROR OBTENIENDO LISTA 2: " + ex.getMessage());
+                    return null;
+                });
+        return employeesWithoutTasks;
+    }
+
+
+    // Generating reports buttons
+    public void onEmployeesWithoutTasksBtn(ActionEvent actionEvent) {
+        List<Trabajador> employeesWithoutTasks = getEmployeesWithoutTasks();
+
+        try {
+            PdfCreator.createEmployeesWithoutTasksReport(employeesWithoutTasks);
+            Utils.showAlert(Alert.AlertType.INFORMATION, "Report generated", "Report generated", "The report has been created successfully").showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void onEmployeesPayrollBtn(ActionEvent actionEvent) {
         FXMLLoader view = new FXMLLoader(
                 Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/newPayrollModal.fxml")));
         Utils.showModal(view, actionEvent).showAndWait();
     }
 
-    public void onEmployeesWithoutTasksBtn(ActionEvent actionEvent) {}
-
-    public void onEmployeesHistoryBtn(ActionEvent actionEvent) {
-        FXMLLoader view = new FXMLLoader(
-                Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/monthHistoryModal.fxml")));
-        Utils.showModal(view, actionEvent).showAndWait();
-    }
-
     public void onGeneralReportBtn(ActionEvent actionEvent) {}
+
     public void onPaymentsForDateBtn(ActionEvent actionEvent) {
         FXMLLoader view = new FXMLLoader(
                 Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/paymentsDateModal.fxml")));

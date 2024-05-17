@@ -16,6 +16,7 @@ module edu.tasklynx.tasklynxjavafx {
     requires jdk.jshell;
     requires kernel;
     requires layout;
+    requires io;
 
     opens edu.tasklynx.tasklynxjavafx to javafx.fxml;
     exports edu.tasklynx.tasklynxjavafx;

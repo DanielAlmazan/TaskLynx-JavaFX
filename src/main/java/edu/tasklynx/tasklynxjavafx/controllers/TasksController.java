@@ -333,15 +333,16 @@ public class TasksController implements Initializable {
             Trabajo trabajoMasInmediato = trabajos.stream()
                     .min(Comparator.comparing(Trabajo::getFecIni))
                     .orElseThrow(() -> new RuntimeException("No se encontró trabajo para el trabajador: " + trabajador.getNombre()));
-            
+
             EmailSender emailSender = new EmailSender(trabajador, trabajos, trabajoMasInmediato.getFecIni());
-            
+
             try {
                 emailSender.sendTaskNotificationEmail();
             } catch (IOException | MessagingException e) {
                 e.printStackTrace();
             }
         });
+    }
 
     private void reassignEmployee(Trabajo trabajoReasigned) {
         if(!trabajosToConfirm.isEmpty()) {

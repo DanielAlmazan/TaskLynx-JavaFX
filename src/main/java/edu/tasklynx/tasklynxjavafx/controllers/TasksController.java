@@ -7,7 +7,7 @@ import edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.AssignEmployeeC
 import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
-import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoResponse;
+import edu.tasklynx.tasklynxjavafx.utils.EmailSender;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 import edu.tasklynx.tasklynxjavafx.utils.Utils;
@@ -65,6 +65,7 @@ public class TasksController implements Initializable {
     private Label lblResponsible;
 
     private Gson gson;
+    private EmailSender emailSender;
     public static List<Trabajo> trabajosToConfirm;
     public static boolean employeeAssigned;
 
@@ -97,9 +98,7 @@ public class TasksController implements Initializable {
             }
         });
 
-        gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                .create();
+        gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
 
         addImages();
         loadTasks();

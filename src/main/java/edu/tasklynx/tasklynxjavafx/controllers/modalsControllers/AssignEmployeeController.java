@@ -66,42 +66,22 @@ public class AssignEmployeeController implements Initializable {
 
     @FXML
     public void closeModal() {
-        TasksController.employeeAssigned = false;
         ((Stage) btnConfirm.getScene().getWindow()).close();
     }
 
     @FXML
     public void confirmModal(ActionEvent event) {
         if (trabajadorSeleccionado != null) {
-            trabajo.setId_trabajador(trabajadorSeleccionado);
+            if(trabajo.getIdTrabajador() == null) {
+                trabajo.setId_trabajador(trabajadorSeleccionado);
+                TasksController.trabajosToConfirm.add(trabajo);
+                TasksController.employeeAssigned = true;
+            } else {
+                trabajo.setId_trabajador(trabajadorSeleccionado);
+                TasksController.taskReassigned = trabajo;
+            }
 
-            TasksController.trabajosToConfirm.add(trabajo);
-            TasksController.employeeAssigned = true;
-
-            ((Stage) btnConfirm.getScene().getWindow()).close();
-            /*String data = gson.toJson(trabajo);
-
-            String url = ServiceUtils.SERVER + "/trabajos/" + trabajo.getCodTrabajo();
-            ServiceUtils.getResponseAsync(url, data, "PUT")
-                    .thenApply(json -> gson.fromJson(json, TrabajoResponse.class))
-                    .thenAccept(response -> Platform.runLater(() -> {
-                        if(!response.isError()) {
-                            Utils.showAlert(
-                                    Alert.AlertType.CONFIRMATION,
-                                    "Information",
-                                    "Employee assigned",
-                                    "The employee was assigned successfully"
-                            ).showAndWait();
-                            closeModal();
-                        } else {
-                            Utils.showAlert(
-                                    Alert.AlertType.ERROR,
-                                    "Error",
-                                    "Error assign the employee",
-                                    "An error ocurred while assigning the employee"
-                            ).showAndWait();
-                        }
-                    }));*/
+            closeModal();
         }
     }
 

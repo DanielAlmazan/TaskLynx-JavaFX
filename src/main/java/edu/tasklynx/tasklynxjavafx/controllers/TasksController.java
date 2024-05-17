@@ -69,8 +69,10 @@ public class TasksController implements Initializable {
 
     private Gson gson;
     private EmailSender emailSender;
+
     public static List<Trabajo> trabajosToConfirm;
-    public static boolean employeeAssigned;
+    public static boolean employeeAssigned = false;
+    public static Trabajo taskReassigned = null;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -80,7 +82,6 @@ public class TasksController implements Initializable {
         btnConfirmTasks.setVisible(false);
 
         trabajosToConfirm = new ArrayList<>();
-        employeeAssigned = false;
 
         pruebasion.setCellFactory(column -> new TableCell<>() {
             @Override
@@ -126,10 +127,13 @@ public class TasksController implements Initializable {
                     Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/assign-employee.fxml")));
             Stage modal = Utils.showModal(view, actionEvent);
             modal.setOnHidden((e) -> Platform.runLater(() -> {
+                if(taskReassigned != null) {
+                    reassignEmployee(taskReassigned);
+                }
+
                 toggleAssigments();
                 previewEmployee();
             }));
-            modal.setOnCloseRequest((e) -> employeeAssigned = false);
             modal.show();
             ((AssignEmployeeController) view.getController()).setTrabajo(trabajo);
         }
@@ -208,6 +212,7 @@ public class TasksController implements Initializable {
                         .thenAccept(response -> Platform.runLater(() -> {
                             if (!response.isError()) {
                                 loadTasks();
+                                filterPendingTasks(trabajo);
                                 Utils.showAlert(
                                         Alert.AlertType.INFORMATION,
                                         "Success",
@@ -232,15 +237,18 @@ public class TasksController implements Initializable {
     }
 
     private void previewEmployee() {
-        if(!trabajosToConfirm.isEmpty() && employeeAssigned) {
-            tbvTasks.getSelectionModel().getSelectedItem().setId_trabajador(
-                    trabajosToConfirm.getLast().getIdTrabajador()
-            );
-            btnAssignEmployee.setDisable(true);
-            lblResponsible.setText(trabajosToConfirm.getLast().getNombreTrabajador());
+        if(!trabajosToConfirm.isEmpty() && (employeeAssigned || taskReassigned != null)) {
+            Trabajo trabajo = employeeAssigned ? trabajosToConfirm.getLast() : taskReassigned;
+
+            tbvTasks.getSelectionModel().getSelectedItem().setId_trabajador(trabajo.getIdTrabajador());
+            lblResponsible.setText(trabajo.getNombreTrabajador());
             tbvTasks.getSelectionModel().getSelectedItem().setPrevisualizar(true);
 
             tbvTasks.refresh();
+
+            // Back to default values
+            employeeAssigned = false;
+            taskReassigned = null;
         }
     }
 
@@ -286,7 +294,7 @@ public class TasksController implements Initializable {
             lblStartingDate.setText(trabajo.getFecIni().toString());
             lblResponsible.setText(trabajo.getNombreTrabajador());
 
-            btnAssignEmployee.setDisable(trabajo.getIdTrabajador() != null);
+            btnAssignEmployee.setDisable(trabajo.getIdTrabajador() != null && !trabajo.getPrevisualizar());
         } else {
             lblDetail.setText("Select a task to see his details");
             detailContainer.setAlignment(Pos.CENTER);
@@ -312,5 +320,25 @@ public class TasksController implements Initializable {
                 });
 
         toggleDetailView();
+    }
+
+    private void reassignEmployee(Trabajo trabajoReasigned) {
+        if(!trabajosToConfirm.isEmpty()) {
+            trabajosToConfirm.forEach(t -> {
+                if(t.getCodTrabajo().equals(trabajoReasigned.getCodTrabajo())) {
+                    t.setId_trabajador(trabajoReasigned.getIdTrabajador());
+                }
+            });
+
+            Platform.runLater(() -> tbvTasksToConfirm.getItems().setAll(trabajosToConfirm));
+        }
+    }
+
+    private void filterPendingTasks(Trabajo trabajoRemoved) {
+        trabajosToConfirm = trabajosToConfirm.stream()
+                .filter(t -> !t.getCodTrabajo().equals(trabajoRemoved.getCodTrabajo()))
+                .toList();
+
+        Platform.runLater(this::toggleAssigments);
     }
 }

@@ -182,12 +182,6 @@
                                         <Insets />
                                     </VBox.margin>
                                 </Button>
-                                <Button mnemonicParsing="false" fx:id="employeesHistoryBtn" prefHeight="50.0" prefWidth="400.0" styleClass="btn,btn-accept"
-                                        onAction="#onEmployeesHistoryBtn" text="EMPLOYEE'S MONTH HISTORY" textAlignment="CENTER">
-                                    <VBox.margin>
-                                        <Insets />
-                                    </VBox.margin>
-                                </Button>
                                 <Button mnemonicParsing="false" fx:id="employeesPayrollBtn" prefHeight="50.0" prefWidth="400.0" styleClass="btn,btn-accept"
                                         onAction="#onEmployeesPayrollBtn" text="EMPLOYEE'S PAYROLL" textAlignment="CENTER">
                                     <VBox.margin>

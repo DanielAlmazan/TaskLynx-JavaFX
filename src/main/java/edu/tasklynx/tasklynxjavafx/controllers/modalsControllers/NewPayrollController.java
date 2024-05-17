@@ -10,6 +10,7 @@ import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.PdfCreator;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
+import edu.tasklynx.tasklynxjavafx.utils.Utils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -120,7 +121,7 @@ public class NewPayrollController {
                 .thenAccept(tasks -> {
                     Platform.runLater(() -> {
                         if (tasks.isEmpty()) {
-                            System.out.println("No tasks found for the selected date range.");
+                            Utils.showAlert(Alert.AlertType.INFORMATION, "No tasks found", "No tasks found", "No tasks found for the selected date range.").showAndWait();
                             return;
                         }
 
@@ -134,6 +135,8 @@ public class NewPayrollController {
                         String dest = "reports/payroll/payroll_" + trabajadorSeleccionado.getNombre() + "-" + trabajadorSeleccionado.getApellidos()
                                 + "_" + startingDate + "_" + endingDate + ".pdf";
                         PdfCreator.createPayrollPDF(payroll, dest);
+                        Utils.showAlert(Alert.AlertType.INFORMATION, "Payroll generated", "Payroll generated", "Payroll generated successfully.").showAndWait();
+                        ((Stage) btnCancel.getScene().getWindow()).close();
                     });
                 });
     }

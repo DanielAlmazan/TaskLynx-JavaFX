@@ -1,15 +1,20 @@
 package edu.tasklynx.tasklynxjavafx.utils;
 
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.UnitValue;
 import edu.tasklynx.tasklynxjavafx.model.Payroll;
+import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 
 import java.io.File;
+import java.util.List;
 
 public class PdfCreator {
 
@@ -55,5 +60,32 @@ public class PdfCreator {
         }
 
         return null;
+    }
+
+    public static void createEmployeesWithoutTasksReport (List<Trabajador> employeesWithoutTasks) {
+        try {
+            PdfWriter writer = new PdfWriter("reports/employeesWithoutTasks.pdf");
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf);
+
+            ImageData imageLogoData = ImageDataFactory.create("src/main/resources/img/png/TaskLynx-empty-logo.png");
+            Image logo = new Image (imageLogoData);
+            document.add(logo);
+
+            ImageData imageTextData = ImageDataFactory.create("src/main/resources/img/png/txt-tasklynx.png");
+            Image image = new Image (imageTextData);
+            document.add(image);
+
+            document.add(new Paragraph("Employees Without Tasks:"));
+            for (Trabajador trabajador : employeesWithoutTasks) {
+                document.add(new Paragraph("- " + trabajador.getNombre() + " " + trabajador.getApellidos()));
+            }
+
+            document.close();
+            System.out.println("PDF Created");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

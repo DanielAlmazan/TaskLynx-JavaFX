@@ -3,9 +3,10 @@ package edu.tasklynx.tasklynxjavafx.controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.AssignEmployeeController;
+import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
-import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoResponse;
+import edu.tasklynx.tasklynxjavafx.utils.EmailSender;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 import edu.tasklynx.tasklynxjavafx.utils.Utils;
@@ -27,10 +28,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class TasksController implements Initializable {
     @FXML
@@ -61,6 +59,7 @@ public class TasksController implements Initializable {
     private Label lblResponsible;
 
     private Gson gson;
+    private EmailSender emailSender;
     public static List<Trabajo> trabajosToConfirm;
 
     @Override
@@ -72,9 +71,7 @@ public class TasksController implements Initializable {
 
         trabajosToConfirm = new ArrayList<>();
 
-        gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                .create();
+        gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
 
         addImages();
         toggleDetailView();

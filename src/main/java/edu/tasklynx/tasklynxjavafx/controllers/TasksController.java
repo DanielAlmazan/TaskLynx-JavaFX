@@ -13,6 +13,7 @@ import edu.tasklynx.tasklynxjavafx.utils.EmailSender;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 import edu.tasklynx.tasklynxjavafx.utils.Utils;
+import jakarta.mail.MessagingException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,12 +31,14 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import jdk.jshell.execution.Util;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 public class TasksController implements Initializable {
     @FXML
@@ -166,11 +169,11 @@ public class TasksController implements Initializable {
                         completedServices.getAndIncrement();
 
                         if(completedServices.get() == totalServices.get()) {
+                            sendEmails(trabajosToConfirm);
                             trabajosToConfirm.clear();
                             Platform.runLater(() -> {
                                 loadTasks();
                                 toggleAssigments();
-
                                 Utils.showAlert(
                                         Alert.AlertType.INFORMATION,
                                         "Information",
@@ -187,7 +190,6 @@ public class TasksController implements Initializable {
                         System.out.println("Error actualizando trabajo: " + ex.getMessage());
                         return null;
                     });
-
         });
     }
 
@@ -321,6 +323,25 @@ public class TasksController implements Initializable {
 
         toggleDetailView();
     }
+    
+    private void sendEmails(List<Trabajo> justAssignedTrabajos) {
+        Map<Trabajador, List<Trabajo>> trabajosPorTrabajador = justAssignedTrabajos.stream()
+                .collect(Collectors.groupingBy(Trabajo::getIdTrabajador));
+
+        // Para cada trabajador, encontrar el trabajo más inmediato y enviar un correo electrónico
+        trabajosPorTrabajador.forEach((trabajador, trabajos) -> {
+            Trabajo trabajoMasInmediato = trabajos.stream()
+                    .min(Comparator.comparing(Trabajo::getFecIni))
+                    .orElseThrow(() -> new RuntimeException("No se encontró trabajo para el trabajador: " + trabajador.getNombre()));
+            
+            EmailSender emailSender = new EmailSender(trabajador, trabajos, trabajoMasInmediato.getFecIni());
+            
+            try {
+                emailSender.sendTaskNotificationEmail();
+            } catch (IOException | MessagingException e) {
+                e.printStackTrace();
+            }
+        });
 
     private void reassignEmployee(Trabajo trabajoReasigned) {
         if(!trabajosToConfirm.isEmpty()) {
@@ -340,5 +361,6 @@ public class TasksController implements Initializable {
                 .toList();
 
         Platform.runLater(this::toggleAssigments);
+
     }
 }

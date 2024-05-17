@@ -9,8 +9,11 @@ import com.itextpdf.layout.property.UnitValue;
 import edu.tasklynx.tasklynxjavafx.model.Payroll;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 
-public class PdfPayrollCreator {
-    public static void createPayrollPDF(Payroll payroll, String dest) {
+import java.io.File;
+
+public class PdfCreator {
+
+    public static File createPayrollPDF(Payroll payroll, String dest) {
 
         try {
             PdfWriter writer = new PdfWriter(dest);
@@ -46,8 +49,11 @@ public class PdfPayrollCreator {
             document.add(table);
             document.close();
             System.out.println("PDF Created");
+            return new File(dest);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return null;
     }
 }

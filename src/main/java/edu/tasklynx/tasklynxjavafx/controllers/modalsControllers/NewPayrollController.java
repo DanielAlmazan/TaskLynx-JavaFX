@@ -8,7 +8,7 @@ import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorListResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
-import edu.tasklynx.tasklynxjavafx.utils.PdfPayrollCreator;
+import edu.tasklynx.tasklynxjavafx.utils.PdfCreator;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -131,8 +131,9 @@ public class NewPayrollController {
 
                         Payroll payroll = new Payroll(trabajadorSeleccionado, tasksByDateRange, startingDate, endingDate, time, salary);
 
-                        String dest = "payroll_" + trabajadorSeleccionado.getIdTrabajador() + ".pdf";
-                        PdfPayrollCreator.createPayrollPDF(payroll, dest);
+                        String dest = "reports/payroll/payroll_" + trabajadorSeleccionado.getNombre() + "-" + trabajadorSeleccionado.getApellidos()
+                                + "_" + startingDate + "_" + endingDate + ".pdf";
+                        PdfCreator.createPayrollPDF(payroll, dest);
                     });
                 });
     }

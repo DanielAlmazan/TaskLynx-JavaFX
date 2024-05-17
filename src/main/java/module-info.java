@@ -27,5 +27,4 @@ module edu.tasklynx.tasklynxjavafx {
     opens edu.tasklynx.tasklynxjavafx.model;
     opens edu.tasklynx.tasklynxjavafx.model.responses;
     opens edu.tasklynx.tasklynxjavafx.utils;
-    exports edu.tasklynx.tasklynxjavafx.utils;
 }

@@ -15,6 +15,7 @@ public class Trabajo {
     private int prioridad;
     private Trabajador idTrabajador;
     private String nombreTrabajador;
+    private boolean previsualizar = false;
     private double remuneration;
 
     public Trabajo(String codTrabajo, String categoria, String descripcion, LocalDate fecIni, LocalDate fecFin, Float tiempo, Integer prioridad, Trabajador idTrabajador) {
@@ -90,6 +91,14 @@ public class Trabajo {
 
     public String getNombreTrabajador() {
         return idTrabajador == null ? "" : idTrabajador.toString();
+    }
+
+    public boolean getPrevisualizar() {
+        return previsualizar;
+    }
+
+    public void setPrevisualizar(boolean previsualizar) {
+        this.previsualizar = previsualizar;
     }
 
     public double getRemuneration() {

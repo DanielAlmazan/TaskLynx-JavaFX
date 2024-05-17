@@ -2,6 +2,7 @@ package edu.tasklynx.tasklynxjavafx.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import edu.tasklynx.tasklynxjavafx.TaskLynxController;
 import edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.AssignEmployeeController;
 import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
@@ -16,21 +17,26 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class TasksController implements Initializable {
+    @FXML
+    private TableColumn<Trabajo, String> pruebasion;
     @FXML
     private VBox panelAssigments;
     @FXML
@@ -61,6 +67,7 @@ public class TasksController implements Initializable {
     private Gson gson;
     private EmailSender emailSender;
     public static List<Trabajo> trabajosToConfirm;
+    public static boolean employeeAssigned;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -70,11 +77,30 @@ public class TasksController implements Initializable {
         btnConfirmTasks.setVisible(false);
 
         trabajosToConfirm = new ArrayList<>();
+        employeeAssigned = false;
+
+        pruebasion.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (item == null || empty) {
+                    setText(null);
+                } else {
+                    setText(item);
+
+                    Trabajo t = getTableRow().getItem();
+
+                    if (t.getPrevisualizar()) {
+                        getStyleClass().add("assigned");
+                    }
+                }
+            }
+        });
 
         gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
 
         addImages();
-        toggleDetailView();
         loadTasks();
     }
 
@@ -87,14 +113,10 @@ public class TasksController implements Initializable {
                     Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/assign-employee.fxml")));
             Stage modal = Utils.showModal(view, actionEvent);
             modal.setOnHidden((e) -> Platform.runLater(() -> {
-                if (!trabajosToConfirm.isEmpty()) {
-                    lblAssignments.setText("Assigned Tasks");
-                    panelAssigments.setAlignment(Pos.TOP_CENTER);
-                    panelAssigments.getChildren().add(tbvTasksToConfirm);
-                    btnConfirmTasks.setVisible(true);
-                    tbvTasksToConfirm.getItems().setAll(trabajosToConfirm);
-                }
+                toggleAssigments();
+                previewEmployee();
             }));
+            modal.setOnCloseRequest((e) -> employeeAssigned = false);
             modal.show();
             ((AssignEmployeeController) view.getController()).setTrabajo(trabajo);
         }
@@ -110,20 +132,79 @@ public class TasksController implements Initializable {
 
     @FXML
     public void confirmAssignments(ActionEvent actionEvent) {
-        System.out.println("PRUEBA");
+        AtomicInteger completedServices = new AtomicInteger(0);
+        AtomicInteger totalServices = new AtomicInteger(trabajosToConfirm.size());
+        Lock lock = new ReentrantLock();
 
-        /*trabajosToConfirm.forEach(trabajo -> {
+        trabajosToConfirm.forEach(trabajo -> {
             String url = ServiceUtils.SERVER + "/trabajos/" + trabajo.getCodTrabajo();
             String data = gson.toJson(trabajo);
 
             ServiceUtils.getResponseAsync(url, data, "PUT")
                     .thenApply(json -> gson.fromJson(json, TrabajoResponse.class))
+                    .thenAccept((response) -> {
+                        // Bloqueo para modificar el valor del atomico
+                        lock.lock();
+
+                        completedServices.getAndIncrement();
+
+                        if(completedServices.get() == totalServices.get()) {
+                            trabajosToConfirm.clear();
+                            Platform.runLater(() -> {
+                                loadTasks();
+                                toggleAssigments();
+
+                                Utils.showAlert(
+                                        Alert.AlertType.INFORMATION,
+                                        "Information",
+                                        "Employees assigned",
+                                        "The employees was assigned successfully"
+                                ).show();
+                            });
+                        }
+
+                        // Desbloqueo para poder acceder al valor del atomico de nuevo
+                        lock.unlock();
+                    })
                     .exceptionally(ex -> {
                         System.out.println("Error actualizando trabajo: " + ex.getMessage());
                         return null;
                     });
 
-        });*/
+        });
+    }
+
+    private void previewEmployee() {
+        if(!trabajosToConfirm.isEmpty() && employeeAssigned) {
+            tbvTasks.getSelectionModel().getSelectedItem().setId_trabajador(
+                    trabajosToConfirm.getLast().getIdTrabajador()
+            );
+            btnAssignEmployee.setDisable(true);
+            lblResponsible.setText(trabajosToConfirm.getLast().getNombreTrabajador());
+            tbvTasks.getSelectionModel().getSelectedItem().setPrevisualizar(true);
+
+            tbvTasks.refresh();
+        }
+    }
+
+    private void toggleAssigments() {
+        if (!trabajosToConfirm.isEmpty() && !btnConfirmTasks.isVisible()) {
+            lblAssignments.setText("Assigned Tasks");
+            panelAssigments.setAlignment(Pos.TOP_CENTER);
+            panelAssigments.getChildren().add(tbvTasksToConfirm);
+            btnConfirmTasks.setVisible(true);
+            tbvTasksToConfirm.getItems().setAll(trabajosToConfirm);
+            TaskLynxController.pendingChanges = true;
+        } else if (!trabajosToConfirm.isEmpty()) {
+            tbvTasksToConfirm.getItems().setAll(trabajosToConfirm);
+            TaskLynxController.pendingChanges = true;
+        } else {
+            panelAssigments.setAlignment(Pos.CENTER);
+            panelAssigments.getChildren().remove(tbvTasksToConfirm);
+            btnConfirmTasks.setVisible(false);
+            lblAssignments.setText("There are no assignments to confirm");
+            TaskLynxController.pendingChanges = false;
+        }
     }
 
     private void addImages() {
@@ -180,5 +261,7 @@ public class TasksController implements Initializable {
                     System.out.println("ERROR OBTENIENDO LISTA 2: " + ex.getMessage());
                     return null;
                 });
+
+        toggleDetailView();
     }
 }

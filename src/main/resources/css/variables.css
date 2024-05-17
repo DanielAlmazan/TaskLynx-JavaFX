@@ -12,6 +12,7 @@
     -btn-danger-hover: #8f4747;
     -even-row: #E1E1E1;
     -selected-row: #6F9EF8;
-
+    -assigned-row: #238f07;
+    -assigned-row-selected: #8ef37f;
     -fx-text-fill: -txt-color;
 }

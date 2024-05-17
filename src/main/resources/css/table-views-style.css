@@ -1,3 +1,11 @@
+.table-row-cell .table-cell.assigned {
+    -fx-text-fill: -assigned-row;
+}
+
+.table-row-cell:selected .table-cell.assigned {
+    -fx-text-fill: -assigned-row-selected;
+}
+
 .table-view .table-row-cell * {
     -fx-text-fill: -main-bg;
 }

@@ -3,6 +3,7 @@ module edu.tasklynx.tasklynxjavafx {
     requires javafx.fxml;
     requires com.google.gson;
     requires java.desktop;
+
     requires jdk.httpserver;
     requires com.google.api.client;
     requires com.google.api.client.auth;
@@ -12,6 +13,7 @@ module edu.tasklynx.tasklynxjavafx {
     requires com.google.api.client.json.gson;
     requires com.google.api.client.extensions.jetty.auth;
     requires com.google.api.client.extensions.java6.auth;
+    requires jdk.jshell;
 
     opens edu.tasklynx.tasklynxjavafx to javafx.fxml;
     exports edu.tasklynx.tasklynxjavafx;

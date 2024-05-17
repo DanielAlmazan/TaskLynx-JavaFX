@@ -31,7 +31,7 @@
                             <columns>
                                 <TableColumn id="column-id" prefWidth="200.0" text="Id">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="idTrabajador" />
+                                        <PropertyValueFactory property="codTrabajo" />
                                     </cellValueFactory>
                                 </TableColumn>
                                 <TableColumn id="first-column" prefWidth="200.0" text="Speciality">
@@ -119,6 +119,34 @@
                                                 </HBox>
                                                 <HBox spacing="10.0">
                                                     <children>
+                                                        <Label text="Ending date:">
+                                                            <font>
+                                                                <Font size="19.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label fx:id="lblEndingDate" text="asdasd">
+                                                            <font>
+                                                                <Font size="19.0" />
+                                                            </font>
+                                                        </Label>
+                                                    </children>
+                                                </HBox>
+                                                <HBox spacing="10.0">
+                                                    <children>
+                                                        <Label text="Time spent:">
+                                                            <font>
+                                                                <Font size="19.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label fx:id="lblTimeSpent" text="asdasd">
+                                                            <font>
+                                                                <Font size="19.0" />
+                                                            </font>
+                                                        </Label>
+                                                    </children>
+                                                </HBox>
+                                                <HBox spacing="10.0">
+                                                    <children>
                                                         <Label text="Responsible:">
                                                             <font>
                                                                 <Font size="19.0" />
@@ -149,31 +177,31 @@
                             </padding>
                             <children>
                                 <Button mnemonicParsing="false" fx:id="employeesWithoutTasksBtn" prefHeight="50.0" prefWidth="400.0" styleClass="btn,btn-accept"
-                                        onAction="#onEmployeesWithoutTasksBtn" text="Employees without assigned tasks" textAlignment="CENTER">
+                                        onAction="#onEmployeesWithoutTasksBtn" text="EMPLOYEES WITHOUT ASSIGNED TASKS" textAlignment="CENTER">
                                     <VBox.margin>
                                         <Insets />
                                     </VBox.margin>
                                 </Button>
                                 <Button mnemonicParsing="false" fx:id="employeesHistoryBtn" prefHeight="50.0" prefWidth="400.0" styleClass="btn,btn-accept"
-                                        onAction="#onEmployeesHistoryBtn" text="Employee's month history" textAlignment="CENTER">
+                                        onAction="#onEmployeesHistoryBtn" text="EMPLOYEE'S MONTH HISTORY" textAlignment="CENTER">
                                     <VBox.margin>
                                         <Insets />
                                     </VBox.margin>
                                 </Button>
                                 <Button mnemonicParsing="false" fx:id="employeesPayrollBtn" prefHeight="50.0" prefWidth="400.0" styleClass="btn,btn-accept"
-                                        onAction="#onEmployeesPayrollBtn" text="Employee's payroll" textAlignment="CENTER">
+                                        onAction="#onEmployeesPayrollBtn" text="EMPLOYEE'S PAYROLL" textAlignment="CENTER">
                                     <VBox.margin>
                                         <Insets />
                                     </VBox.margin>
                                 </Button>
                                 <Button mnemonicParsing="false" fx:id="generalReportBtn" prefHeight="50.0" prefWidth="400.0" styleClass="btn,btn-accept"
-                                        onAction="#onGeneralReportBtn" text="General reports for all employees" textAlignment="CENTER">
+                                        onAction="#onGeneralReportBtn" text="GENERAL REPORTS FOR ALL EMPLOYEES" textAlignment="CENTER">
                                     <VBox.margin>
                                         <Insets />
                                     </VBox.margin>
                                 </Button>
                                 <Button mnemonicParsing="false" fx:id="paymentsForDateBtn" prefHeight="50.0" prefWidth="400.0" styleClass="btn,btn-accept"
-                                        onAction="#onPaymentsForDateBtn" text="Payments according to a date range" textAlignment="CENTER">
+                                        onAction="#onPaymentsForDateBtn" text="PAYMENTS ACCORDING TO A DATE RANGE" textAlignment="CENTER">
                                     <VBox.margin>
                                         <Insets />
                                     </VBox.margin>

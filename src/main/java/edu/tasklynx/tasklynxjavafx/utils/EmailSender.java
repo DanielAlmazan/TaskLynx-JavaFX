@@ -22,8 +22,8 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 
 import java.io.*;
-import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 
@@ -33,14 +33,7 @@ public class EmailSender {
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     private static final String CREDENTIALS_FILE_PATH = "src/main/resources/client_secret.json";
 
-    private final Trabajador trabajador;
-    private final List<Trabajo> trabajos;
-    private final LocalDate soonerTaskDate;
-
-    public EmailSender(Trabajador trabajador, List<Trabajo> trabajos, LocalDate soonerTaskDate) {
-        this.trabajador = trabajador;
-        this.trabajos = trabajos;
-        this.soonerTaskDate = soonerTaskDate;
+    public EmailSender() {
     }
 
     private Gmail getService() throws IOException {
@@ -50,24 +43,24 @@ public class EmailSender {
                 .build();
     }
 
-    public void sendTaskNotificationEmail() throws IOException, MessagingException {
+    public void sendTaskNotificationEmail(Trabajador trabajador, List<Trabajo> trabajos) throws IOException, MessagingException {
         Gmail service = getService();
         System.out.println("Sending email to " + trabajador.getEmail());
-        MimeMessage emailContent = buildTaskNotificationEmail(trabajador, soonerTaskDate);
+        MimeMessage emailContent = buildTaskNotificationEmail(trabajador, trabajos);
         sendMessage(service, "me", emailContent);
     }
 
-    public void sendPayrollEmail(File payrollFile) throws IOException, MessagingException {
+    public void sendPayrollEmail(Trabajador trabajador, File payrollFile) throws IOException, MessagingException {
         Gmail service = getService();
         MimeMessage emailContent = buildPayrollEmail(trabajador, payrollFile);
         sendMessage(service, "me", emailContent);
     }
 
-    private MimeMessage buildTaskNotificationEmail(Trabajador trabajador, LocalDate firstTaskDate) throws MessagingException {
+    private MimeMessage buildTaskNotificationEmail(Trabajador trabajador, List<Trabajo> trabajos) throws MessagingException {
         MimeMultipart mimeMultipart = new MimeMultipart();
 
         MimeBodyPart mainContent = new MimeBodyPart();
-        mainContent.setContent(createMainContent(trabajador, firstTaskDate), "text/html");
+        mainContent.setContent(createMainContent(trabajador, trabajos), "text/html");
 
         MimeBodyPart footer = new MimeBodyPart();
         footer.setContent(footerContent, "text/html");
@@ -75,7 +68,9 @@ public class EmailSender {
         mimeMultipart.addBodyPart(mainContent);
         mimeMultipart.addBodyPart(footer);
 
-        MimeMessage emailContent = createEmail("almazansellesdaniel@gmail.com", "youremail@example.com", "New tasks upcoming!", "");
+        trabajador.setEmail("almazansellesdaniel@gmail.com");
+
+        MimeMessage emailContent = createEmail(trabajador.getEmail(), "almazansellesdaniel@gmail.com", "New tasks upcoming!", "");
         emailContent.setContent(mimeMultipart);
 
         return emailContent;
@@ -85,15 +80,17 @@ public class EmailSender {
         MimeMultipart mimeMultipart = new MimeMultipart();
 
         MimeBodyPart textPart = new MimeBodyPart();
-        textPart.setText("Dear " + trabajador.getNombre() + ",\n\nPlease find attached your payroll for this month.\n\nBest regards,\nYour Company");
+        textPart.setText("Dear " + trabajador.getNombre() + ",\n\nPlease find attached your payroll for this month.\n\nBest regards,\nTaskLynx.");
 
         MimeBodyPart attachmentPart = new MimeBodyPart();
         attachmentPart.attachFile(payrollFile);
 
         mimeMultipart.addBodyPart(textPart);
         mimeMultipart.addBodyPart(attachmentPart);
+        
+        trabajador.setEmail("almazansellesdaniel@gmail.com");
 
-        MimeMessage emailContent = createEmail(trabajador.getEmail(), "youremail@example.com", "Your Payroll", "");
+        MimeMessage emailContent = createEmail(trabajador.getEmail(), "almazansellesdaniel@gmail.com", "Your Payroll", "");
         emailContent.setContent(mimeMultipart);
 
         return emailContent;
@@ -142,13 +139,20 @@ public class EmailSender {
 
     private final String footerContent = """
             <footer>
-                <p>Be a Lynx, don't miss a task!</p>
+                <h3>Be a Lynx, don't miss a task!</h3>
                  <p>© 2024 TaskLynx.</p>
              </footer>""";
 
-    private String createMainContent(Trabajador trabajador, LocalDate firstTaskDate) {
-        return "<h1>Hello, " + trabajador.getNombre() + "!</h1>" +
-               "<p>Your have new upcoming tasks!</p>" +
-               "<p>The first is for " + firstTaskDate + "</p>";
+    private String createMainContent(Trabajador trabajador, List<Trabajo> trabajos) {
+        String mainContent = "<h1>Hello, " + trabajador.getNombre() + "!</h1><p>You have new upcoming tasks!</p><ul>";
+        
+        for (Trabajo trabajo : trabajos.stream().sorted(Comparator.comparing(Trabajo::getFecIni)).toList()) {
+            mainContent += "<li>Task ID: " + trabajo.getCodTrabajo() + "</li><ul>" +
+                    "<li>Description: " + trabajo.getDescripcion() + "</li>" +
+                    "<li>Starting Date: " + trabajo.getFecIni() + "</li>" +
+                   "<li>Priority: " + trabajo.getPrioridad() + "</li></ul>";
+        }
+        
+        return mainContent +"</ul>";
     }
 }

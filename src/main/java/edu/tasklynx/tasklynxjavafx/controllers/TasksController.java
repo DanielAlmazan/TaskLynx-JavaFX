@@ -353,23 +353,23 @@ public class TasksController implements Initializable {
 
         toggleDetailView();
     }
-    
+
     private void sendEmails(List<Trabajo> justAssignedTrabajos) {
-        Map<Trabajador, List<Trabajo>> trabajosPorTrabajador = justAssignedTrabajos.stream()
-                .collect(Collectors.groupingBy(Trabajo::getIdTrabajador));
+        HashMap<Trabajador, List<Trabajo>> trabajosByTrabajador = new HashMap<>();
 
-        // Para cada trabajador, encontrar el trabajo más inmediato y enviar un correo electrónico
-        trabajosPorTrabajador.forEach((trabajador, trabajos) -> {
-            Trabajo trabajoMasInmediato = trabajos.stream()
-                    .min(Comparator.comparing(Trabajo::getFecIni))
-                    .orElseThrow(() -> new RuntimeException("No se encontró trabajo para el trabajador: " + trabajador.getNombre()));
+        justAssignedTrabajos.forEach(trabajo -> {
+            Trabajador trabajador = trabajo.getIdTrabajador();
+            trabajosByTrabajador.putIfAbsent(trabajador, new ArrayList<>());
+            trabajosByTrabajador.get(trabajador).add(trabajo);
+        });
 
-            EmailSender emailSender = new EmailSender(trabajador, trabajos, trabajoMasInmediato.getFecIni());
+        EmailSender emailSender = new EmailSender();
 
+        trabajosByTrabajador.forEach((trabajador, trabajos) -> {
             try {
-                emailSender.sendTaskNotificationEmail();
+                emailSender.sendTaskNotificationEmail(trabajador, trabajos);
             } catch (IOException | MessagingException e) {
-                e.printStackTrace();
+                System.out.println("Error sending email: " + e.getMessage());
             }
         });
     }

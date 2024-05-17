@@ -7,6 +7,7 @@ import edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.AssignEmployeeC
 import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
+import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoResponse;
 import edu.tasklynx.tasklynxjavafx.utils.EmailSender;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;

@@ -14,6 +14,8 @@ module edu.tasklynx.tasklynxjavafx {
     requires com.google.api.client.extensions.jetty.auth;
     requires com.google.api.client.extensions.java6.auth;
     requires jdk.jshell;
+    requires kernel;
+    requires layout;
 
     opens edu.tasklynx.tasklynxjavafx to javafx.fxml;
     exports edu.tasklynx.tasklynxjavafx;
@@ -25,4 +27,5 @@ module edu.tasklynx.tasklynxjavafx {
     opens edu.tasklynx.tasklynxjavafx.model;
     opens edu.tasklynx.tasklynxjavafx.model.responses;
     opens edu.tasklynx.tasklynxjavafx.utils;
+    exports edu.tasklynx.tasklynxjavafx.utils;
 }

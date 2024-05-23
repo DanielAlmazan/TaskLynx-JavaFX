@@ -1,11 +1,15 @@
 package edu.tasklynx.tasklynxjavafx.controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import edu.tasklynx.tasklynxjavafx.TaskLynxController;
 import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.BaseResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorListResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorResponse;
+import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
+import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 import edu.tasklynx.tasklynxjavafx.utils.Utils;
 import javafx.application.Platform;
@@ -23,6 +27,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,6 +35,12 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
 public class EmployeesController implements Initializable {
+    @FXML
+    private VBox panelPendingTasks;
+    @FXML
+    private Label lblPendingTasks;
+    @FXML
+    private TableView<Trabajo> tbvPendingTasks;
     @FXML
     private TableView<Trabajador> tbvEmployees;
     @FXML
@@ -56,7 +67,7 @@ public class EmployeesController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        gson = new Gson();
+        gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
 
         detailContainer.getChildren().remove(blockDetail);
 
@@ -121,7 +132,7 @@ public class EmployeesController implements Initializable {
                                         Alert.AlertType.ERROR,
                                         "Error",
                                         "Error deleting the employee",
-                                        response.getErrorMessage()
+                                        "The employee has pending tasks"
                                 ).show();
                             }
                         }))
@@ -173,22 +184,50 @@ public class EmployeesController implements Initializable {
             detailContainer.setAlignment(Pos.CENTER);
             detailContainer.getChildren().remove(blockDetail);
         }
+
+        toggleAssigments();
     }
 
-    private CompletableFuture<Trabajador> getEmployeeById(String id) {
-        String url = ServiceUtils.SERVER + "/employees/" + id;
-        return ServiceUtils.getResponseAsync(url, null, "GET")
-                .thenApply(json -> gson.fromJson(json, TrabajadorResponse.class))
-                .thenApply(response -> {
-                    if (response != null && !response.isError()) {
-                        return response.getEmployee();
+    private void toggleAssigments() {
+        Trabajador trabajador = tbvEmployees.getSelectionModel().getSelectedItem();
+
+        if (trabajador != null) {
+            getEmployeePendingTasks(trabajador.getIdTrabajador());
+        } else {
+            panelPendingTasks.setAlignment(Pos.CENTER);
+            panelPendingTasks.getChildren().remove(tbvPendingTasks);
+            lblPendingTasks.setText("Select an employee to see his pending tasks");
+        }
+    }
+
+    private void getEmployeePendingTasks(String id) {
+        String url = ServiceUtils.SERVER + "/trabajadores/" + id + "/trabajos/pendientes";
+        ServiceUtils.getResponseAsync(url, null, "GET")
+                .thenApply(json -> gson.fromJson(json, TrabajoListResponse.class))
+                .thenAccept(response -> {
+                    if (!response.isError()) {
+                        Platform.runLater(() -> {
+                            if(!response.getJobs().isEmpty()) {
+                                lblPendingTasks.setText("Pending Tasks");
+                                panelPendingTasks.setAlignment(Pos.TOP_CENTER);
+
+                                if(!panelPendingTasks.getChildren().contains(tbvPendingTasks)) {
+                                    panelPendingTasks.getChildren().add(tbvPendingTasks);
+                                }
+
+                                tbvPendingTasks.getItems().setAll(response.getJobs());
+                            } else {
+                                lblPendingTasks.setText("This employee doesn't any have pending task");
+                                panelPendingTasks.setAlignment(Pos.CENTER);
+                                panelPendingTasks.getChildren().remove(tbvPendingTasks);
+                            }
+                        });
                     } else {
-                        System.out.println("ERROR OBTENIENDO EMPLEADO 1: " + response.getErrorMessage());
-                        return null;
+                        System.out.println("ERROR OBTENIENDO TRABAJOS 1: " + response.getErrorMessage());
                     }
                 })
                 .exceptionally(ex -> {
-                    System.out.println("ERROR OBTENIENDO EMPLEADO 2: " + ex.getMessage());
+                    System.out.println("ERROR OBTENIENDO TRABAJOS 2: " + ex.getMessage());
                     return null;
                 });
     }

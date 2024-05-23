@@ -2,8 +2,10 @@ package edu.tasklynx.tasklynxjavafx.controllers.modalsControllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import edu.tasklynx.tasklynxjavafx.model.Habitacion;
 import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
+import edu.tasklynx.tasklynxjavafx.model.responses.HabitacionResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorListResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoResponse;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
@@ -17,6 +19,8 @@ import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.net.URL;
+import java.util.Comparator;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class NewTaskModalController implements Initializable {
@@ -44,23 +48,35 @@ public class NewTaskModalController implements Initializable {
     @FXML
     public Label lblErrIdTrabajador;
     @FXML
+    public Label lblErrRoom;
+    @FXML
     public Button btnCreate;
     @FXML
     public Button btnCancel;
+    @FXML
+    public CheckBox chkBoxIsCleaning;
+    @FXML
+    public ChoiceBox<Habitacion> cbRoom;
     // endregion
 
+    private List<Trabajador> employees;
     private Gson gson;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cbPrioridad.getItems().addAll(1, 2, 3, 4);
         dpFecIni.setValue(LocalDate.now());
-        getEmployees();
+
         gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .create();
+
+        getEmployees();
+        getDirtyRooms();
     }
 
+    // region FXML methods
+    @FXML
     public void onCreateTaskBtn() {
         if (!fieldsAreValid()) {
             try {
@@ -74,7 +90,42 @@ public class NewTaskModalController implements Initializable {
         }
     }
 
+    @FXML
+    public void onCheckBoxCleaningClicked() {
+        if (chkBoxIsCleaning.isSelected()) {
+            cbRoom.setDisable(false);
+            tiCategoria.setText("Limpieza");
+            tiCategoria.setDisable(true);
+        } else {
+            cbRoom.setDisable(true);
+            tiCategoria.setDisable(false);
+            tiCategoria.setText(null);
+            tiDescripcion.setText(null);
+        }
+        filterEmployeesByCategory();
+        setDescriptionForRoom();
+    }
+
+    @FXML
+    public void onRoomSelected() {
+        setDescriptionForRoom();
+    }
+
+    @FXML
+    public void onCategoriaKeyReleased() {
+        filterEmployeesByCategory();
+    }
+
+    @FXML
+    public void onTrabajadorSelected() {
+        if (cbIdTrabajador.getValue() != null) {
+            tiCategoria.setText(cbIdTrabajador.getValue().getEspecialidad());
+        }
+    }
+    // endregion
+
     // region Validation methods
+
     public void onCancelBtn() {
         ((Stage) btnCancel.getScene().getWindow()).close();
     }
@@ -95,18 +146,21 @@ public class NewTaskModalController implements Initializable {
     private boolean fieldsAreValid() {
         lblErrCodTrabajo.setText(checkCodTrabajo(tiCodTrabajo.getText()));
         lblErrCategoria.setText(checkCategoria(tiCategoria.getText()));
+        lblErrRoom.setText(checkRoom(cbRoom.getValue()));
         lblErrDescripcion.setText(checkDescripcion(tiDescripcion.getText()));
         lblErrPrioridad.setText(checkPrioridad(cbPrioridad.getValue()));
 
         lblErrCodTrabajo.setVisible(lblErrCodTrabajo.getText() != null);
         lblErrCategoria.setVisible(lblErrCategoria.getText() != null);
+        lblErrRoom.setVisible(lblErrRoom.getText() != null);
         lblErrDescripcion.setVisible(lblErrDescripcion.getText() != null);
         lblErrPrioridad.setVisible(lblErrPrioridad.getText() != null);
 
         return lblErrCodTrabajo.isVisible()
-                || lblErrCategoria.isVisible()
-                || lblErrDescripcion.isVisible()
-                || lblErrPrioridad.isVisible();
+               || lblErrRoom.isVisible()
+               || lblErrCategoria.isVisible()
+               || lblErrDescripcion.isVisible()
+               || lblErrPrioridad.isVisible();
     }
 
     private String checkCodTrabajo(String codTrabajo) {
@@ -128,9 +182,7 @@ public class NewTaskModalController implements Initializable {
 
         return ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenApply(json -> gson.fromJson(json, TrabajoResponse.class))
-                .thenApply(response -> {
-                    return response != null && response.getJob() != null;
-                })
+                .thenApply(response -> response != null && response.getJob() != null)
                 .join();
     }
 
@@ -140,8 +192,17 @@ public class NewTaskModalController implements Initializable {
             error = "La categoría es obligatoria";
         } else if (categoria.length() > 50) {
             error = "La categoría no puede tener más de 50 caracteres";
-        } else if (cbIdTrabajador.getValue() != null && !cbIdTrabajador.getValue().getEspecialidad().equals(categoria)) {
+        } else if (cbIdTrabajador.getValue() != null && !cbIdTrabajador.getValue().getEspecialidad().toLowerCase().contains(categoria.toLowerCase())) {
             error = "La categoría debe ser la misma que la del trabajador";
+        }
+
+        return error;
+    }
+    
+    private String checkRoom(Habitacion room) {
+        String error = null;
+        if (chkBoxIsCleaning.isSelected() && room == null) {
+            error = "Si la tarea es de limpieza, debe seleccionar una habitación";
         }
 
         return error;
@@ -170,6 +231,40 @@ public class NewTaskModalController implements Initializable {
     }
     // endregion
 
+    // region Aux methods
+    private void setDescriptionForRoom() {
+        tiDescripcion.setDisable(false);
+
+        if (chkBoxIsCleaning.isSelected()) {
+            tiDescripcion.setText(null);
+
+            if (cbRoom.getValue() != null) {
+                tiDescripcion.setText("Limpieza de la habitación " + cbRoom.getValue().getNumero());
+            }
+
+            tiDescripcion.setDisable(true);
+        }
+    }
+
+    private void filterEmployeesByCategory() {
+        cbIdTrabajador.getItems().clear();
+
+        if (tiCategoria.getText() == null
+            || tiCategoria.getText().isBlank()
+            || tiCategoria.getText().isEmpty()
+        ) {
+            cbIdTrabajador.getItems().addAll(employees);
+        } else {
+            cbIdTrabajador.getItems()
+                    .addAll(employees.stream()
+                            .filter(e -> e.getEspecialidad().toLowerCase().contains(tiCategoria.getText().toLowerCase()))
+                            .toList()
+                    );
+        }
+    }
+    // endregion
+
+    // region Service methods
     private void submitTask(Trabajo newTask) {
         String url = ServiceUtils.SERVER + "/trabajos";
 
@@ -209,7 +304,8 @@ public class NewTaskModalController implements Initializable {
                 .thenAccept(response -> {
                     if (!response.isError()) {
                         Platform.runLater(() -> {
-                            cbIdTrabajador.getItems().addAll(response.getEmployees());
+                            employees = response.getEmployees();
+                            cbIdTrabajador.getItems().addAll(employees);
                         });
                     } else {
                         Platform.runLater(() -> {
@@ -223,4 +319,38 @@ public class NewTaskModalController implements Initializable {
                     }
                 });
     }
+
+    private void getDirtyRooms() {
+        String url = ServiceUtils.SERVER_NEST_LOCAL + "/limpieza/sucias";
+
+        ServiceUtils.getResponseAsync(url, null, "GET")
+                .thenApply(json -> gson.fromJson(json, HabitacionResponse.class))
+                .thenAccept(response -> {
+                    if (response != null) {
+                        Platform.runLater(() -> {
+                            cbRoom.getItems()
+                                    .addAll(response.getHabitaciones()
+                                            .stream()
+                                            .sorted(Comparator.comparingInt(Habitacion::getNumero))
+                                            .toList()
+                                    );
+                            cbRoom.setDisable(true);
+                        });
+                    } else {
+                        Platform.runLater(() -> {
+                            // Show an error alert
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Error");
+                            alert.setHeaderText("Error getting the dirty rooms");
+                            alert.setContentText("There was an error getting the dirty rooms");
+                            alert.showAndWait();
+                        });
+                    }
+                })
+                .exceptionally(ex -> {
+                    System.out.println("Error getting dirty rooms: " + ex.getMessage());
+                    return null;
+                });
+    }
+    // endregion
 }

@@ -33,6 +33,7 @@ target/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/dataSources.xml
 *.iws
 *.iml
 *.ipr
@@ -65,4 +66,6 @@ build/
 ### Mac OS ###
 .DS_Store
 
-.idea/dataSources.xml
+src/main/resources/client_secret.json
+tokens/StoredCredential
+reports/

@@ -80,7 +80,7 @@
                                     <children>
                                         <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0" styleClass="container, tertiary">
                                             <children>
-                                                <Button id="btn-edit-employee" mnemonicParsing="false" styleClass="btn, btn-accept" text="Edit employee">
+                                                <Button id="btn-edit-employee" mnemonicParsing="false" onAction="#editEmployee" styleClass="btn, btn-accept" text="Edit employee">
                                                     <font>
                                                         <Font size="18.0" />
                                                     </font>

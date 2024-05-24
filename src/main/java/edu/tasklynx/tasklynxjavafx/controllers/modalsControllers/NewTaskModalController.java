@@ -39,6 +39,8 @@ public class NewTaskModalController implements Initializable {
     @FXML
     public ChoiceBox<Integer> cbPrioridad;
     @FXML
+    public Label lblTitle;
+    @FXML
     public Label lblErrCodTrabajo;
     @FXML
     public Label lblErrCategoria;
@@ -59,9 +61,41 @@ public class NewTaskModalController implements Initializable {
     @FXML
     public ChoiceBox<Habitacion> cbRoom;
     // endregion
+    
+    private Trabajo editingTask;
 
     private List<Trabajador> employees;
     private Gson gson;
+    
+    public void setEditMode(Trabajo task) {
+        if (task != null) {
+            lblTitle.setText("Edit task");
+            btnCreate.setText("Update");
+            editingTask = task;
+            
+            tiCodTrabajo.setText(task.getCodTrabajo());
+            tiCodTrabajo.setDisable(true);
+            
+            tiDescripcion.setText(task.getDescripcion());
+            if (task.getCategoria().equalsIgnoreCase("limpieza")) {
+                tiDescripcion.setDisable(true);
+                chkBoxIsCleaning.setSelected(true);
+                
+                String[] description = task.getDescripcion().split(" ");
+                int roomNumber = Integer.parseInt(description[description.length - 1]);
+                cbRoom.setValue(cbRoom.getItems().stream().filter(r -> r.getNumero() == roomNumber).findFirst().orElse(null));
+                System.out.println("Room: " + cbRoom.getValue());
+                cbRoom.setDisable(false);
+            }
+            chkBoxIsCleaning.setDisable(true);
+            
+            tiCategoria.setText(task.getCategoria());
+            tiCategoria.setDisable(true);
+
+            dpFecIni.setValue(task.getFecIni());
+            cbPrioridad.setValue(task.getPrioridad());
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -256,6 +290,7 @@ public class NewTaskModalController implements Initializable {
         ) {
             cbIdTrabajador.getItems().addAll(employees);
         } else {
+            tiCategoria.setDisable(false);
             cbIdTrabajador.getItems()
                     .addAll(employees.stream()
                             .filter(e ->
@@ -265,6 +300,9 @@ public class NewTaskModalController implements Initializable {
                                             ))
                             .toList()
                     );
+            if (editingTask != null) {
+                tiCategoria.setDisable(true);
+            }
         }
     }
     // endregion
@@ -274,8 +312,12 @@ public class NewTaskModalController implements Initializable {
         String url = ServiceUtils.SERVER + "/trabajos";
 
         String data = gson.toJson(newTask);
+        
+        if (editingTask != null) {
+            url += "/" + editingTask.getCodTrabajo();
+        }
 
-        ServiceUtils.getResponseAsync(url, data, "POST")
+        ServiceUtils.getResponseAsync(url, data, editingTask == null ? "POST" : "PUT")
                 .thenApply(json -> gson.fromJson(json, TrabajoResponse.class))
                 .thenAccept(response -> {
                     if (!response.isError()) {
@@ -311,6 +353,9 @@ public class NewTaskModalController implements Initializable {
                         Platform.runLater(() -> {
                             employees = response.getEmployees();
                             cbIdTrabajador.getItems().addAll(employees);
+                            if (editingTask != null) {
+                                filterEmployeesByCategory();
+                            }
                         });
                     } else {
                         Platform.runLater(() -> {

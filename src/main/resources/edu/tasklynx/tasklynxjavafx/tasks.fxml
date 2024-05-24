@@ -81,7 +81,7 @@
                            <children>
                               <HBox alignment="CENTER" spacing="10.0" styleClass="container, tertiary">
                                  <children>
-                                    <Button id="btn-edit-task" mnemonicParsing="false" styleClass="btn, btn-accept" text="Edit task">
+                                    <Button id="btn-edit-task" fx:id="btnEditTask" onAction="#onEditTask" mnemonicParsing="false" styleClass="btn, btn-accept" text="Edit task">
                                        <font>
                                           <Font size="18.0" />
                                        </font>

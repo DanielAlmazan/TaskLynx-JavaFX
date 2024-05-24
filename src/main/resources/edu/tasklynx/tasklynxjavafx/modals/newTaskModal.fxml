@@ -18,7 +18,7 @@
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.NewTaskModalController">
     <children>
-        <Label alignment="TOP_CENTER" text="New Task" textAlignment="CENTER"/>
+        <Label fx:id="lblTitle" alignment="TOP_CENTER" text="New Task" textAlignment="CENTER"/>
         <VBox prefHeight="200.0" spacing="10.0" styleClass="container, tertiary"
               stylesheets="@../../../../css/buttons_style.css">
             <children>

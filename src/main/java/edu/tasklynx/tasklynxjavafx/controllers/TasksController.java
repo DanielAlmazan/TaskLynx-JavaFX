@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.tasklynx.tasklynxjavafx.TaskLynxController;
 import edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.AssignEmployeeController;
+import edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.NewTaskModalController;
 import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.BaseResponse;
@@ -15,23 +16,17 @@ import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 import edu.tasklynx.tasklynxjavafx.utils.Utils;
 import jakarta.mail.MessagingException;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import jdk.jshell.execution.Util;
 
 import java.io.IOException;
 import java.net.URL;
@@ -43,6 +38,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class TasksController implements Initializable {
+    public Button btnEditTask;
     @FXML
     private TableColumn<Trabajo, String> pruebasion;
     @FXML
@@ -137,7 +133,7 @@ public class TasksController implements Initializable {
     }
 
     @FXML
-    public void onKeyReleased(KeyEvent keyEvent) {
+    public void onKeyReleased() {
         toggleDetailView();
     }
 
@@ -163,7 +159,7 @@ public class TasksController implements Initializable {
     }
 
     @FXML
-    public void openNewTaskModal(ActionEvent actionEvent) {
+    public void openNewTaskModal() {
         FXMLLoader view = new FXMLLoader(
                 Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/newTaskModal.fxml")));
         Utils.showModal(view, (Stage) tbvTasks.getScene().getWindow()).showAndWait();
@@ -171,7 +167,7 @@ public class TasksController implements Initializable {
     }
 
     @FXML
-    public void confirmAssignments(ActionEvent actionEvent) {
+    public void confirmAssignments() {
         AtomicInteger completedServices = new AtomicInteger(0);
         AtomicInteger totalServices = new AtomicInteger(trabajosToConfirm.size());
         Lock lock = new ReentrantLock();
@@ -214,7 +210,7 @@ public class TasksController implements Initializable {
     }
 
     @FXML
-    public void deleteTask(ActionEvent actionEvent) {
+    public void deleteTask() {
         Alert alert = Utils.showAlert(
                 Alert.AlertType.CONFIRMATION,
                 "Caution",
@@ -256,6 +252,17 @@ public class TasksController implements Initializable {
                         });
             }
         }
+    }
+
+    @FXML
+    public void onEditTask() {
+        FXMLLoader view = new FXMLLoader(
+                Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/newTaskModal.fxml")));
+        Stage modal = Utils.showModal(view, (Stage) tbvTasks.getScene().getWindow());
+        modal.setOnHiding((e) -> loadTasks());
+        modal.show();
+        
+        ((NewTaskModalController) view.getController()).setEditMode(tbvTasks.getSelectionModel().getSelectedItem());
     }
 
     private void previewEmployee() {

@@ -2,12 +2,11 @@ package edu.tasklynx.tasklynxjavafx.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import edu.tasklynx.tasklynxjavafx.TaskLynxController;
+import edu.tasklynx.tasklynxjavafx.controllers.modalsControllers.NewEmployeeOrEditEmployeeModalController;
 import edu.tasklynx.tasklynxjavafx.model.Trabajador;
 import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.BaseResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorListResponse;
-import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoListResponse;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
@@ -18,6 +17,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -32,7 +33,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.concurrent.CompletableFuture;
 
 public class EmployeesController implements Initializable {
     @FXML
@@ -64,6 +64,7 @@ public class EmployeesController implements Initializable {
 
     private List<Trabajador> list;
     private Gson gson;
+    private boolean isEditing = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -97,7 +98,13 @@ public class EmployeesController implements Initializable {
 
     @FXML
     public void onAddEmployee(ActionEvent actionEvent) {
-        modalAddEmployee(actionEvent);
+        modalAddOrEditEmployee(actionEvent, null);
+    }
+
+    @FXML
+    public void editEmployee(ActionEvent actionEvent) {
+        Trabajador employee = tbvEmployees.getSelectionModel().getSelectedItem();
+        modalAddOrEditEmployee(actionEvent, employee);
     }
 
     @FXML
@@ -111,10 +118,10 @@ public class EmployeesController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
 
-        if(result.isPresent() && result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             Trabajador trabajador = tbvEmployees.getSelectionModel().getSelectedItem();
 
-            if(trabajador != null) {
+            if (trabajador != null) {
                 String url = ServiceUtils.SERVER + "/trabajadores/" + trabajador.getIdTrabajador();
                 ServiceUtils.getResponseAsync(url, null, "DELETE")
                         .thenApply(json -> gson.fromJson(json, BaseResponse.class))
@@ -207,11 +214,11 @@ public class EmployeesController implements Initializable {
                 .thenAccept(response -> {
                     if (!response.isError()) {
                         Platform.runLater(() -> {
-                            if(!response.getJobs().isEmpty()) {
+                            if (!response.getJobs().isEmpty()) {
                                 lblPendingTasks.setText("Pending Tasks");
                                 panelPendingTasks.setAlignment(Pos.TOP_CENTER);
 
-                                if(!panelPendingTasks.getChildren().contains(tbvPendingTasks)) {
+                                if (!panelPendingTasks.getChildren().contains(tbvPendingTasks)) {
                                     panelPendingTasks.getChildren().add(tbvPendingTasks);
                                 }
 
@@ -232,11 +239,25 @@ public class EmployeesController implements Initializable {
                 });
     }
 
-    private void modalAddEmployee(ActionEvent actionEvent) {
-        FXMLLoader view = new FXMLLoader(
-                Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/newEmployeeModal.fxml")));
-        Utils.showModal(view, (Stage) tbvEmployees.getScene().getWindow()).showAndWait();
-        loadEmployees();
+    private void modalAddOrEditEmployee(ActionEvent actionEvent, Trabajador employee) {
+        try {
+            FXMLLoader view = new FXMLLoader(
+                    Objects.requireNonNull(getClass().getResource("/edu/tasklynx/tasklynxjavafx/modals/newEmployeeOrEditEmployeeModal.fxml")));
+
+            Parent root = view.load();
+
+            NewEmployeeOrEditEmployeeModalController controller = view.getController();
+
+            controller.initialize(employee);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+            loadEmployees();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 

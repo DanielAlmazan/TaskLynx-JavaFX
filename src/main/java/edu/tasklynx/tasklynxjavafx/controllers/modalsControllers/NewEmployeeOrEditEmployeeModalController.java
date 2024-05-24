@@ -15,8 +15,9 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.util.regex.Pattern;
 
-public class newEmployeeModalController {
+public class NewEmployeeOrEditEmployeeModalController {
 
     @FXML
     public Label lblErrorId;
@@ -42,18 +43,37 @@ public class newEmployeeModalController {
     @FXML
     public TextField tiSurname;
     @FXML
-    public TextField tiPassword;
-    @FXML
     public TextField tiSpeciality;
     @FXML
     public TextField tiEmail;
 
     @FXML
-    public Button btnAddEmployee;
+    public Button btnAddOrEditEmployee;
     @FXML
     public Button btnCancel;
 
     private Gson gson;
+
+    private boolean isEditing;
+
+    public void initialize(Trabajador employee) {
+        if (employee != null) {
+            isEditing = true;
+            System.out.println("isEditing true");
+            btnAddOrEditEmployee.setText("Edit Employee");
+            tiId.setText(employee.getIdTrabajador());
+            tiId.setDisable(true);
+            tiDni.setText(employee.getDni());
+            tiName.setText(employee.getNombre());
+            tiSurname.setText(employee.getApellidos());
+            tiSpeciality.setText(employee.getEspecialidad());
+            tiEmail.setText(employee.getEmail());
+        } else {
+            isEditing = false;
+            System.out.println("isEditing false");
+            btnAddOrEditEmployee.setText("Add Employee");
+        }
+    }
 
     //region Checkings for the fields
     private String checkId(String id) {
@@ -98,8 +118,13 @@ public class newEmployeeModalController {
     }
 
     private String checkEmail(String email) {
+        Pattern emailRegex = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
         if (email.length() > 150) {
             return "The email must be less than 150 characters.";
+        }
+
+        if (!emailRegex.matcher(email).matches()) {
+            return "The email is not valid.";
         }
         return null;
     }
@@ -171,9 +196,45 @@ public class newEmployeeModalController {
                 });
     }
 
+    private void editEmployee(Trabajador employee) {
+
+        String url = ServiceUtils.SERVER + "/trabajadores/" + employee.getIdTrabajador();
+
+        // Serialize the data to JSON
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
+        String data = gson.toJson(employee);
+
+        // Call to the service to edit the employee
+        ServiceUtils.getResponseAsync(url, data, "PUT")
+                .thenApply(json -> gson.fromJson(json, TrabajadorResponse.class))
+                .thenAccept(response -> {
+                    if (!response.isError()) {
+                        Platform.runLater(() -> {
+                            // Show a success alert
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Information");
+                            alert.setHeaderText("Employee edited.");
+                            alert.setContentText("The employee was edited successfully.");
+                            alert.showAndWait();
+                            onCancelBtn();
+                        });
+                    } else {
+                        Platform.runLater(() -> {
+                            // Show an error alert
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Error");
+                            alert.setHeaderText("Error editing the employee");
+                            alert.setContentText(response.getErrorMessage());
+                            alert.showAndWait();
+                        });
+                    }
+                });
+    }
 
     // Event handlers
-    public void onAddEmployeeBtn() {
+    public void onAddOrEditEmployeeBtn() {
         if (!checkFields()) {
             try {
                 Trabajador employee = new Trabajador(
@@ -185,7 +246,11 @@ public class newEmployeeModalController {
                         tiEmail.getText(),
                         tiSpeciality.getText()
                 );
-                addEmployee(employee);
+                if (!isEditing) {
+                    addEmployee(employee);
+                } else {
+                    editEmployee(employee);
+                }
             } catch (NullPointerException e) {
                 System.out.println("Error: " + e.getMessage());
             }

@@ -20,9 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -30,8 +28,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import jdk.jshell.execution.Util;
 
 import java.io.IOException;
 import java.net.URL;
@@ -44,7 +40,7 @@ import java.util.stream.Collectors;
 
 public class TasksController implements Initializable {
     @FXML
-    private TableColumn<Trabajo, String> pruebasion;
+    private TableColumn<Trabajo, String> columnResponsible;
     @FXML
     private VBox panelAssigments;
     @FXML
@@ -71,6 +67,8 @@ public class TasksController implements Initializable {
     private Label lblStartingDate;
     @FXML
     private Label lblResponsible;
+    @FXML
+    private Label lblPriority;
 
     private Gson gson;
     private EmailSender emailSender;
@@ -88,7 +86,7 @@ public class TasksController implements Initializable {
 
         trabajosToConfirm = new ArrayList<>();
 
-        pruebasion.setCellFactory(column -> new TableCell<>() {
+        columnResponsible.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -315,6 +313,7 @@ public class TasksController implements Initializable {
             lblDescription.setText(trabajo.getDescripcion());
             lblStartingDate.setText(trabajo.getFecIni().toString());
             lblResponsible.setText(trabajo.getNombreTrabajador());
+            lblPriority.setText(Integer.toString(trabajo.getPrioridad()));
 
             btnAssignEmployee.setDisable(trabajo.getIdTrabajador() != null && !trabajo.getPrevisualizar());
         } else {

@@ -11,6 +11,7 @@ import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoResponse;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 
+import edu.tasklynx.tasklynxjavafx.utils.Utils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -257,7 +258,11 @@ public class NewTaskModalController implements Initializable {
         } else {
             cbIdTrabajador.getItems()
                     .addAll(employees.stream()
-                            .filter(e -> e.getEspecialidad().toLowerCase().contains(tiCategoria.getText().toLowerCase()))
+                            .filter(e ->
+                                    Utils.removeInvalidCharacters(e.getEspecialidad())
+                                            .toLowerCase().contains(
+                                                    Utils.removeInvalidCharacters(tiCategoria.getText()).toLowerCase()
+                                            ))
                             .toList()
                     );
         }
@@ -321,7 +326,7 @@ public class NewTaskModalController implements Initializable {
     }
 
     private void getDirtyRooms() {
-        String url = ServiceUtils.SERVER_NEST_LOCAL + "/limpieza/sucias";
+        String url = ServiceUtils.SERVER_NEST + "/limpieza/sucias";
 
         ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenApply(json -> gson.fromJson(json, HabitacionResponse.class))

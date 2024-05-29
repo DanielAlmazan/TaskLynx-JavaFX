@@ -4,6 +4,10 @@ public class Habitacion {
     private String _id;
     private int numero;
 
+    public Habitacion(int numero) {
+        this.numero = numero;
+    }
+
     public String get_id() {
         return _id;
     }

@@ -126,6 +126,7 @@ public class TasksController implements Initializable {
                     trabajoSelected.setPrevisualizar(false);
                     trabajoSelected.setId_trabajador(null);
                     lblResponsible.setText("");
+                    btnEditTask.setDisable(false);
 
                     filterPendingTasks(trabajoSelected);
                     tbvTasks.refresh();
@@ -274,6 +275,7 @@ public class TasksController implements Initializable {
             tbvTasks.getSelectionModel().getSelectedItem().setId_trabajador(trabajo.getIdTrabajador());
             lblResponsible.setText(trabajo.getNombreTrabajador());
             tbvTasks.getSelectionModel().getSelectedItem().setPrevisualizar(true);
+            btnEditTask.setDisable(true);
 
             tbvTasks.refresh();
 
@@ -327,6 +329,7 @@ public class TasksController implements Initializable {
             lblPriority.setText(Integer.toString(trabajo.getPrioridad()));
 
             btnAssignEmployee.setDisable(trabajo.getIdTrabajador() != null && !trabajo.getPrevisualizar());
+            btnEditTask.setDisable(trabajo.getIdTrabajador() != null);
         } else {
             lblDetail.setText("Select a task to see his details");
             detailContainer.setAlignment(Pos.CENTER);

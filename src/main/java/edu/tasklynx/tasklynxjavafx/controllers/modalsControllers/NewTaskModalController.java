@@ -61,34 +61,36 @@ public class NewTaskModalController implements Initializable {
     @FXML
     public ChoiceBox<Habitacion> cbRoom;
     // endregion
-    
+
     private Trabajo editingTask;
 
     private List<Trabajador> employees;
     private Gson gson;
-    
+
     public void setEditMode(Trabajo task) {
         if (task != null) {
             lblTitle.setText("Edit task");
             btnCreate.setText("Update");
             editingTask = task;
-            
+
             tiCodTrabajo.setText(task.getCodTrabajo());
             tiCodTrabajo.setDisable(true);
-            
+
             tiDescripcion.setText(task.getDescripcion());
             if (task.getCategoria().equalsIgnoreCase("limpieza")) {
                 tiDescripcion.setDisable(true);
                 chkBoxIsCleaning.setSelected(true);
-                
+
                 String[] description = task.getDescripcion().split(" ");
                 int roomNumber = Integer.parseInt(description[description.length - 1]);
-                cbRoom.setValue(cbRoom.getItems().stream().filter(r -> r.getNumero() == roomNumber).findFirst().orElse(null));
-                System.out.println("Room: " + cbRoom.getValue());
+                cbRoom.setValue(new Habitacion(roomNumber));
                 cbRoom.setDisable(false);
+
+                System.out.println("Description: " + description);
+                System.out.println("Room: " + roomNumber);
             }
             chkBoxIsCleaning.setDisable(true);
-            
+
             tiCategoria.setText(task.getCategoria());
             tiCategoria.setDisable(true);
 
@@ -200,13 +202,14 @@ public class NewTaskModalController implements Initializable {
 
     private String checkCodTrabajo(String codTrabajo) {
         String error = null;
-
-        if (codTrabajo == null || codTrabajo.isEmpty()) {
-            error = "El código de trabajo es obligatorio";
-        } else if (codTrabajo.length() > 5) {
-            error = "El código de trabajo no puede tener más de 5 caracteres";
-        } else if (codTrabajoExists(codTrabajo)) {
-            error = "El código de trabajo ya existe";
+        if (editingTask == null) {
+            if (codTrabajo == null || codTrabajo.isEmpty()) {
+                error = "El código de trabajo es obligatorio";
+            } else if (codTrabajo.length() > 5) {
+                error = "El código de trabajo no puede tener más de 5 caracteres";
+            } else if (codTrabajoExists(codTrabajo)) {
+                error = "El código de trabajo ya existe";
+            }
         }
 
         return error;
@@ -233,7 +236,7 @@ public class NewTaskModalController implements Initializable {
 
         return error;
     }
-    
+
     private String checkRoom(Habitacion room) {
         String error = null;
         if (chkBoxIsCleaning.isSelected() && room == null) {
@@ -312,7 +315,7 @@ public class NewTaskModalController implements Initializable {
         String url = ServiceUtils.SERVER + "/trabajos";
 
         String data = gson.toJson(newTask);
-        
+
         if (editingTask != null) {
             url += "/" + editingTask.getCodTrabajo();
         }
@@ -325,7 +328,8 @@ public class NewTaskModalController implements Initializable {
                             // Show a success alert
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                             alert.setTitle("Information");
-                            alert.setHeaderText("New task added.");
+                            String successMessage = editingTask == null ? "The task was added successfully." : "The task was updated successfully.";
+                            alert.setHeaderText(successMessage);
                             alert.setContentText("The task was added successfully.");
                             alert.showAndWait();
                             onCancelBtn();

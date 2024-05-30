@@ -8,20 +8,21 @@ import edu.tasklynx.tasklynxjavafx.model.Trabajo;
 import edu.tasklynx.tasklynxjavafx.model.responses.HabitacionResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajadorListResponse;
 import edu.tasklynx.tasklynxjavafx.model.responses.TrabajoResponse;
+import edu.tasklynx.tasklynxjavafx.utils.EmailSender;
 import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 
+import jakarta.mail.MessagingException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.net.URL;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class NewTaskModalController implements Initializable {
     // region FXML attributes
@@ -324,6 +325,11 @@ public class NewTaskModalController implements Initializable {
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                             alert.setTitle("Information");
                             String successMessage = editingTask == null ? "The task was added successfully." : "The task was updated successfully.";
+                            
+                            if (response.getJob().getIdTrabajador() != null) {
+                                sendEmail(response.getJob());
+                            }
+                            
                             alert.setHeaderText(successMessage);
                             alert.setContentText("The task was added successfully.");
                             alert.showAndWait();
@@ -369,6 +375,17 @@ public class NewTaskModalController implements Initializable {
                 });
     }
 
+    private void sendEmail(Trabajo justAssignedTrabajo) {
+        EmailSender emailSender = new EmailSender();
+
+        try {
+            emailSender.sendTaskNotificationEmail(justAssignedTrabajo.getIdTrabajador(), List.of(justAssignedTrabajo));
+        } catch (IOException | MessagingException e) {
+            System.out.println("Error sending email: " + e.getMessage());
+        }
+    }
+
+
     private void getDirtyRooms() {
         String url = ServiceUtils.SERVER_NEST + "/limpieza/sucias";
 
@@ -383,7 +400,9 @@ public class NewTaskModalController implements Initializable {
                                             .sorted(Comparator.comparingInt(Habitacion::getNumero))
                                             .toList()
                                     );
-                            cbRoom.setDisable(true);
+                            if (editingTask != null && !editingTask.getCategoria().equalsIgnoreCase("limpieza")) {
+                                cbRoom.setDisable(true);
+                            }
                         });
                     } else {
                         Platform.runLater(() -> {

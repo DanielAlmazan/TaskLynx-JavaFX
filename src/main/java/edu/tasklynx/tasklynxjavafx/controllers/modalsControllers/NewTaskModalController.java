@@ -13,6 +13,7 @@ import edu.tasklynx.tasklynxjavafx.utils.LocalDateAdapter;
 import edu.tasklynx.tasklynxjavafx.utils.ServiceUtils;
 
 import jakarta.mail.MessagingException;
+import edu.tasklynx.tasklynxjavafx.utils.Utils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -296,7 +297,11 @@ public class NewTaskModalController implements Initializable {
             tiCategoria.setDisable(false);
             cbIdTrabajador.getItems()
                     .addAll(employees.stream()
-                            .filter(e -> e.getEspecialidad().toLowerCase().contains(tiCategoria.getText().toLowerCase()))
+                            .filter(e ->
+                                    Utils.removeInvalidCharacters(e.getEspecialidad())
+                                            .toLowerCase().contains(
+                                                    Utils.removeInvalidCharacters(tiCategoria.getText()).toLowerCase()
+                                            ))
                             .toList()
                     );
             if (editingTask != null) {

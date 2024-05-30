@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 public class TasksController implements Initializable {
     public Button btnEditTask;
     @FXML
-    private TableColumn<Trabajo, String> pruebasion;
+    private TableColumn<Trabajo, String> columnResponsible;
     @FXML
     private VBox panelAssigments;
     @FXML
@@ -67,6 +67,8 @@ public class TasksController implements Initializable {
     private Label lblStartingDate;
     @FXML
     private Label lblResponsible;
+    @FXML
+    private Label lblPriority;
 
     private Gson gson;
     private EmailSender emailSender;
@@ -84,7 +86,7 @@ public class TasksController implements Initializable {
 
         trabajosToConfirm = new ArrayList<>();
 
-        pruebasion.setCellFactory(column -> new TableCell<>() {
+        columnResponsible.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -324,6 +326,7 @@ public class TasksController implements Initializable {
             lblDescription.setText(trabajo.getDescripcion());
             lblStartingDate.setText(trabajo.getFecIni().toString());
             lblResponsible.setText(trabajo.getNombreTrabajador());
+            lblPriority.setText(Integer.toString(trabajo.getPrioridad()));
 
             btnAssignEmployee.setDisable(trabajo.getIdTrabajador() != null && !trabajo.getPrevisualizar());
             btnEditTask.setDisable(trabajo.getIdTrabajador() != null);

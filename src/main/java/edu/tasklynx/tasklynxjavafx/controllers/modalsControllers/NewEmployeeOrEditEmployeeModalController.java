@@ -28,8 +28,6 @@ public class NewEmployeeOrEditEmployeeModalController {
     @FXML
     public Label lblErrorSurname;
     @FXML
-    public Label lblErrorPassword;
-    @FXML
     public Label lblErrorSpeciality;
     @FXML
     public Label lblErrorEmail;
@@ -152,7 +150,6 @@ public class NewEmployeeOrEditEmployeeModalController {
                 && lblErrorName.isVisible()
                 && lblErrorSurname.isVisible()
                 && lblErrorSpeciality.isVisible()
-                && lblErrorPassword.isVisible()
                 && lblErrorEmail.isVisible();
     }
 
@@ -167,6 +164,10 @@ public class NewEmployeeOrEditEmployeeModalController {
         gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .create();
+        
+        // Set the password as the DNI
+        employee.setContraseña(employee.getDni());
+        
         String data = gson.toJson(employee);
 
         // Call to the service to add the new employee

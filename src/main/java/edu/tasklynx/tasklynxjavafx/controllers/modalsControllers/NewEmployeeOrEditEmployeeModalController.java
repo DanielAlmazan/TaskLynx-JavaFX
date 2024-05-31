@@ -165,7 +165,7 @@ public class NewEmployeeOrEditEmployeeModalController {
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .create();
         
-        // Set the password as the DNI
+        // Set the password as default
         employee.setContraseña("tasklynx2024");
         
         String data = gson.toJson(employee);
@@ -200,6 +200,9 @@ public class NewEmployeeOrEditEmployeeModalController {
     private void editEmployee(Trabajador employee) {
 
         String url = ServiceUtils.SERVER + "/trabajadores/" + employee.getIdTrabajador();
+
+        // Set the password as default
+        employee.setContraseña("tasklynx2024");
 
         // Serialize the data to JSON
         gson = new GsonBuilder()

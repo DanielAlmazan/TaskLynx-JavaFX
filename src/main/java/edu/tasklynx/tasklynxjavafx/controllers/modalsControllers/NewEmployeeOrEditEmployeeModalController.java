@@ -166,7 +166,7 @@ public class NewEmployeeOrEditEmployeeModalController {
                 .create();
         
         // Set the password as the DNI
-        employee.setContraseña(employee.getDni());
+        employee.setContraseña("tasklynx2024");
         
         String data = gson.toJson(employee);
 
